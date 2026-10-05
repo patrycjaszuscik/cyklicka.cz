@@ -1,0 +1,38 @@
+# Cyklická
+
+> Czech-language educational guide to dietary supplements for women — vitamins,
+> minerals, herbs, adaptogens and medicinal mushrooms. Organised by menstrual
+> cycle phase, life stage and health topic. Nothing is sold on the site.
+
+Cyklická explains what each nutrient does in the body, how strong the evidence
+behind it is, how to dose it, what to combine it with and what to avoid. Every
+supplement is presented from three angles: clinical research, contemporary
+biohacking practice, and traditional folk use.
+
+## Scope
+
+- 70+ supplements: vitamins, minerals, amino acids, omega fatty acids,
+  mitochondrial compounds, herbs, adaptogens and medicinal mushrooms
+- Menstrual cycle: four phases, with cycle lengths from 26 to 33 days
+- Life stages: adolescence, pre-conception, pregnancy, postpartum, adulthood,
+  perimenopause, menopause
+- Conditions: PCOS, endometriosis, thyroid disease, premature ovarian
+  insufficiency, acne, PMS
+- EU/EFSA upper limits and pregnancy safety flags on every entry
+
+## Editorial position
+
+- Educational only; explicitly not medical advice
+- Evidence is graded, and weak or absent evidence is stated plainly rather
+  than hidden — several entries say outright that the evidence is insufficient
+- Commercial formulations are labelled as such and never presented as guidance
+- Sources are listed with year, study design and participant numbers
+
+## Key pages
+
+- [Homepage](https://cyklicka.cz/): search, life stages, health areas, cycle
+- [Sources](https://cyklicka.cz/): named clinical trials and reviews, newest first
+
+## Contact
+
+ahoj@cyklicka.cz
