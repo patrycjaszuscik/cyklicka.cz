@@ -179,6 +179,7 @@
     --d4: #8b62b5;
     --d5: #6f4f96;
     --d6: #8d9a8a;
+    --d7: #a8763f;
     --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
     --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-play: 'Prata', 'Playfair Display', Georgia, serif;
@@ -2185,6 +2186,9 @@
   const TOPIC_MAP = Object.fromEntries(TOPICS.map(t => [t.id, t]));
   const ITEM_MAP = Object.fromEntries(ITEMS.map(i => [i.id, i]));
   const topicColor = (tid) => WORLD_MAP[TOPIC_MAP[tid].world].color;
+  /* herbs, mushrooms and adaptogens share one world, so the world colour alone
+     made them indistinguishable; adaptogens get their own amber */
+  const itemColor = (item) => item.tier === 'adapto' ? 'var(--d7)' : topicColor(item.key);
 
   /* ═══ guide questions ═══ */
   const QUESTIONS = [
@@ -3669,12 +3673,12 @@
     const card = document.createElement('div');
     card.className = 'card' + (opts.core ? ' core' : '');
     card.dataset.id = item.id;
-    card.style.setProperty('--c', topicColor(item.key));
+    card.style.setProperty('--c', itemColor(item));
     const open = document.createElement('button');
     open.type = 'button';
     open.className = 'card-open';
     open.innerHTML =
-      '<span class="card-head"><span class="card-glyph">' + disc(topicColor(item.key)) + '</span>' +
+      '<span class="card-head"><span class="card-glyph">' + disc(itemColor(item)) + '</span>' +
         '<span class="card-name">' + item[lang].name + '</span></span>' +
       statTiles(item) +
       '<span class="helps-label">' + t().helpsShort + '</span>' + helpsRow(item) +
@@ -3698,7 +3702,7 @@
     const row = document.createElement('div');
     row.className = 'row';
     row.dataset.id = item.id;
-    row.style.setProperty('--c', topicColor(item.key));
+    row.style.setProperty('--c', itemColor(item));
     const open = document.createElement('button');
     open.type = 'button';
     open.style.cssText = 'display:flex;align-items:center;gap:12px;width:100%;text-align:left';
@@ -4609,7 +4613,7 @@
     lastFocus = document.activeElement;
     openItemId = item.id;
     syncHash();
-    const color = topicColor(item.key);
+    const color = itemColor(item);
     const tags = item.topics.map(tid =>
       '<button type="button" class="tag" data-topic="' + tid + '">' +
       dot(color) + TOPIC_MAP[tid][lang].name + '</button>').join('');
