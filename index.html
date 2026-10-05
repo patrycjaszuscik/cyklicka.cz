@@ -94,14 +94,10 @@
   });
   gtag('js', new Date());
 
+  /* The tag loads straight away, but every storage type above is denied, so it
+     writes no cookie and no identifier until she accepts — cookieless pings only. */
   (function () {
-    var KEY = 'cyklicka:consent';
-    var saved = null;
-    try { saved = localStorage.getItem(KEY); } catch (e) {}
-
-    function loadGA() {
-      if (!window.GA_ID || window.__gaLoaded) return;
-      window.__gaLoaded = true;
+    if (window.GA_ID) {
       var s = document.createElement('script');
       s.async = true;
       s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_ID;
@@ -109,32 +105,37 @@
       gtag('config', window.GA_ID, { anonymize_ip: true });
     }
 
-    function accept() {
-      gtag('consent', 'update', { analytics_storage: 'granted' });
-      try { localStorage.setItem(KEY, 'granted'); } catch (e) {}
-      loadGA();
-    }
-    function reject() {
-      try { localStorage.setItem(KEY, 'denied'); } catch (e) {}
+    var KEY = 'cyklicka:consent';
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+
+    function decide(granted) {
+      gtag('consent', 'update', {
+        analytics_storage: granted ? 'granted' : 'denied',
+        ad_storage: granted ? 'granted' : 'denied',
+        ad_user_data: granted ? 'granted' : 'denied',
+        ad_personalization: granted ? 'granted' : 'denied'
+      });
+      try { localStorage.setItem(KEY, granted ? 'granted' : 'denied'); } catch (e) {}
     }
 
-    if (saved === 'granted') { accept(); }
-    else if (saved !== 'denied') {
-      document.addEventListener('DOMContentLoaded', function () {
-        var bar = document.createElement('div');
-        bar.className = 'consent';
-        bar.innerHTML =
-          '<p>Rádi bychom měřili návštěvnost přes Google Analytics, ať víme, co je pro vás užitečné. ' +
-          'Bez souhlasu se nenačte a žádné cookies se neuloží.</p>' +
-          '<div class="consent-btns">' +
-          '<button type="button" class="c-no">Jen nezbytné</button>' +
-          '<button type="button" class="c-yes">Souhlasím</button></div>';
-        document.body.appendChild(bar);
-        requestAnimationFrame(function () { bar.dataset.in = 'true'; });
-        bar.querySelector('.c-yes').addEventListener('click', function () { accept(); bar.remove(); });
-        bar.querySelector('.c-no').addEventListener('click', function () { reject(); bar.remove(); });
-      });
-    }
+    if (saved === 'granted') { decide(true); return; }
+    if (saved === 'denied') { return; }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var bar = document.createElement('div');
+      bar.className = 'consent';
+      bar.innerHTML =
+        '<p>Měříme návštěvnost přes Google Analytics, ať víme, co je pro tebe užitečné. ' +
+        'Dokud nesouhlasíš, neukládáme žádné cookies ani nic, podle čeho by šlo tě poznat.</p>' +
+        '<div class="consent-btns">' +
+        '<button type="button" class="c-no">Jen nezbytné</button>' +
+        '<button type="button" class="c-yes">Souhlasím</button></div>';
+      document.body.appendChild(bar);
+      requestAnimationFrame(function () { bar.dataset.in = 'true'; });
+      bar.querySelector('.c-yes').addEventListener('click', function () { decide(true); bar.remove(); });
+      bar.querySelector('.c-no').addEventListener('click', function () { decide(false); bar.remove(); });
+    });
   })();
 </script>
 
@@ -605,10 +606,17 @@
   .hit:hover { transform: translateY(-2px); border-color: var(--c); box-shadow: 0 8px 22px color-mix(in srgb, var(--c) 32%, transparent); }
   .hit-dot { width: 22px; height: 22px; flex-shrink: 0; }
   .rows { display: flex; flex-direction: column; gap: 8px; max-width: 720px; margin: 0 auto; width: 100%; }
-  .row { position: relative; display: flex; align-items: center; gap: 13px; width: 100%; text-align: left; box-shadow: var(--shadow-s);
-    padding: 12px 52px 12px 12px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--border);
+  .row { position: relative; overflow: hidden; display: flex; align-items: center; gap: 13px; width: 100%; text-align: left; box-shadow: var(--shadow-s);
+    padding: 12px 52px 12px 17px; border-radius: var(--r-md);
+    background: color-mix(in srgb, var(--c) 13%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--c) 38%, var(--border));
     transition: border-color .24s var(--ease), background .24s var(--ease); }
-  .row:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--border-lift)); background: var(--surface-2); }
+  /* a colour edge so each herb reads as belonging to its area */
+  .row::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--c); }
+  .row .row-name { color: color-mix(in srgb, var(--c) 55%, var(--ink)); }
+  .row .row-glyph { background: color-mix(in srgb, var(--c) 26%, var(--surface)); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
+  .row:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--border-lift));
+    background: color-mix(in srgb, var(--c) 13%, var(--surface)); }
   .row-glyph { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; color: var(--c);
     background: color-mix(in srgb, var(--c) 17%, var(--surface-2)); border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
   .row-glyph .art { width: 26px; height: 26px; }
@@ -2239,9 +2247,9 @@
       heroTitle: 'Doplňky stravy pro ženy, <em>srozumitelně</em>.',
       heroSub: 'Vitaminy, minerály a byliny přehledně vysvětlené — abys svému tělu rozuměla a uměla si pomoct sama.',
       searchPlaceholder: 'Hořčík, akné, menopauza, těhotenství…',
-      guideTitle: 'Nevíte, kde začít?',
-      guideDesc: 'Zeptáme se na pět věcí a podle toho vám ukážeme, co by vašemu tělu mohlo chybět. A hlavně proč.',
-      guideGo: 'Zjistit, co mi může chybět',
+      guideTitle: 'Začneme u tebe',
+      guideDesc: 'Pět otázek a uvidíš, co by ti mohlo chybět.',
+      guideGo: 'Pojďme na to',
       feelsLabel: 'Co se vás týká?',
       feelsSub: 'U každého tématu si projdeme, co se v těle děje — a co mu dodat, aby si dokázalo pomoct samo.',
       worldsLabel: 'Šest oblastí, kde hledat',
@@ -2353,9 +2361,9 @@
       heroTitle: 'Supplements for women, <em>made clear</em>.',
       heroSub: 'Vitamins, minerals and herbs explained clearly — so you understand your body and can help yourself.',
       searchPlaceholder: 'Magnesium, acne, menopause, pregnancy…',
-      guideTitle: 'Not sure where to start?',
-      guideDesc: 'Answer five questions and we will show which nutrients your body may need — and why those.',
-      guideGo: 'See what I might need',
+      guideTitle: 'Let’s start with you',
+      guideDesc: 'Five questions, and you’ll see what you might be missing.',
+      guideGo: 'Let’s go',
       feelsLabel: 'Pick what applies to you',
       feelsSub: 'For each topic we go through what the body is doing — and what to give it so it can help itself.',
       worldsLabel: 'Six areas to explore',
