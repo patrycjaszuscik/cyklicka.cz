@@ -180,6 +180,7 @@
     --d5: #6f4f96;
     --d6: #8d9a8a;
     --d7: #a8763f;
+    --d8: #5f8a63;
     --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
     --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-play: 'Prata', 'Playfair Display', Georgia, serif;
@@ -2217,7 +2218,10 @@
   const topicColor = (tid) => WORLD_MAP[TOPIC_MAP[tid].world].color;
   /* herbs, mushrooms and adaptogens share one world, so the world colour alone
      made them indistinguishable; adaptogens get their own amber */
-  const itemColor = (item) => item.tier === 'adapto' ? 'var(--d7)' : topicColor(item.key);
+  const itemColor = (item) =>
+    item.tier === 'adapto' ? 'var(--d7)' :
+    item.tier === 'herb' ? 'var(--d8)' :
+    topicColor(item.key);
 
   /* ═══ guide questions ═══ */
   const QUESTIONS = [
