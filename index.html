@@ -542,7 +542,8 @@
   .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 52%, transparent);
     box-shadow: 0 2px 6px rgba(30,10,20,.07), 0 16px 40px color-mix(in srgb, var(--c) 34%, transparent); }
   .card:active { transform: scale(.985); }
-  .card-open { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; width: 100%; padding: 20px 16px 20px; cursor: pointer; }
+  .card-open { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; width: 100%; padding: 22px 16px 20px; cursor: pointer; }
+  .card-for { font-size: 0.84rem; line-height: 1.5; color: color-mix(in srgb, var(--c) 52%, var(--ink-soft)); }
   .card::after { content: ''; position: absolute; right: 14px; bottom: 14px; width: 7px; height: 7px; border-right: 1.5px solid var(--ink-dim); border-top: 1.5px solid var(--ink-dim); transform: rotate(45deg); opacity: .45; transition: opacity .24s var(--ease), transform .24s var(--ease); }
   .card:hover::after { opacity: 1; transform: rotate(45deg) translate(2px, -2px); border-color: var(--c); }
   .card.core { background: linear-gradient(160deg, color-mix(in srgb, var(--c) 13%, var(--surface)), var(--surface)); border-color: color-mix(in srgb, var(--c) 30%, var(--border)); }
@@ -729,7 +730,14 @@
     .world.peek-open .world-peek { display: flex; }
     .peek-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%;
       padding: 13px 20px; font-size: 0.84rem; font-weight: 700; color: var(--c);
-      border-top: 1px solid var(--border); background: none; }
+      border-top: none; background: none; }
+    /* topics should read as their own objects, not faint text on white */
+    .world-peek { gap: 7px; padding: 4px 14px 16px; }
+    .world-peek .peek { border-top: none; border-radius: 12px; padding: 12px 14px;
+      background: color-mix(in srgb, var(--c) 12%, var(--surface));
+      border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+      color: color-mix(in srgb, var(--c) 58%, var(--ink)); font-weight: 700; }
+    .world-peek .peek-dot { width: 22px; height: 22px; }
     .peek-toggle::after { content: ''; width: 8px; height: 8px; border-right: 1.7px solid currentColor;
       border-bottom: 1.7px solid currentColor; margin-bottom: 3px;
       transform: rotate(45deg); transition: transform .24s var(--ease); }
@@ -737,6 +745,8 @@
     /* the per-topic arrows inside the list are redundant next to the toggle */
     .world-peek .peek .icon { display: none; }
     .world-banner { height: 118px; }
+    /* the round arrow on the banner duplicated the toggle chevron below it */
+    .world-head .go { display: none; }
     .world-name { font-size: 1.34rem; }
   }
 
@@ -859,9 +869,14 @@
     background: var(--surface); border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(30,10,20,.04); }
   .sheet-sec summary { cursor: pointer; list-style: none; }
   .sheet-sec summary::-webkit-details-marker { display: none; }
-  details.sheet-sec > summary.sec-head { margin-bottom: 0; padding-bottom: 14px; }
-  details.sheet-sec[open] > summary.sec-head { margin-bottom: 16px; }
-  details.sheet-sec > summary.sec-head::before { content: ''; position: absolute; right: 2px; top: 4px;
+  details.sheet-sec { padding-bottom: 0; }
+  details.sheet-sec > summary.sec-head { margin: -2px -18px 0; padding: 0 34px 0 18px; border-bottom: none; }
+  details.sheet-sec > summary.sec-head::after { display: none; }
+  details.sheet-sec[open] > summary.sec-head { margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border); }
+  details.sheet-sec[open] { padding-bottom: 16px; }
+  details.sheet-sec > summary.sec-head::before { content: ''; position: absolute; right: 18px; top: 50%;
+    margin-top: -5px;
     width: 8px; height: 8px; border-right: 1.7px solid var(--ink-dim); border-bottom: 1.7px solid var(--ink-dim);
     transform: rotate(45deg); transition: transform .24s var(--ease); }
   details.sheet-sec[open] > summary.sec-head::before { transform: rotate(225deg); }
@@ -3731,21 +3746,11 @@
     const open = document.createElement('button');
     open.type = 'button';
     open.className = 'card-open';
+    const keys = HELPS[item.id];
     open.innerHTML =
       '<span class="card-head"><span class="card-glyph">' + disc(itemColor(item)) + '</span>' +
         '<span class="card-name">' + item[lang].name + '</span></span>' +
-      statTiles(item) +
-      '<span class="helps-label">' + t().helpsShort + '</span>' + helpsRow(item) +
-      '<span class="card-blurb">' + item[lang].blurb + '</span>' +
-      '<span class="card-meta">' +
-        (item.food === 'with' ? '<span class="cm">' + svg('meal') + t().withFood + '</span>'
-         : item.food === 'empty' ? '<span class="cm">' + svg('fasting') + t().onEmpty + '</span>' : '') +
-        (PREG[item.id] ? '<span class="cm cm-' + PREG[item.id] + '">' + t()['pregShort_' + PREG[item.id]] + '</span>' : '') +
-      '</span>' +
-      '<span class="card-topics">' + item.topics.slice(0, 2).map(function (tid) {
-        return '<span class="ct">' + TOPIC_MAP[tid][lang].name + '</span>';
-      }).join('') + '</span>' +
-      '<span class="card-grade" style="--gc:' + GRADE_META[gradeOf(item).g].c + '">' + gradeOf(item).g + '</span>';
+      '<span class="card-for">' + (keys ? keys[lang].join(' · ') : item[lang].blurb) + '</span>';
     open.addEventListener('click', () => openSheet(item));
     card.appendChild(open);
     card.appendChild(bookmarkEl(item));
@@ -4234,20 +4239,39 @@
 
     el.cycleBody.innerHTML = '';
     if (!p) return;
-    const intro = document.createElement('div');
-    intro.className = 'phase-detail';
-    intro.style.setProperty('--c', p.color);
-    intro.innerHTML =
-      '<span class="meta-label">' + t().cycleWhat + '</span>' +
-      '<div class="what-list phase-points">' + sentences(p[lang].body).map(function (s) {
-        return '<div class="what-point"><span class="wp-dot"></span><p>' + s + '</p></div>';
-      }).join('') + '</div>' +
-      '<span class="phase-need">' + p[lang].need + '</span>';
-    el.cycleBody.appendChild(intro);
+    openPhaseSheet(p);
+  }
+
+  /* the phase opens over the ring instead of unfolding beneath it */
+  function openPhaseSheet(p) {
+    lastFocus = document.activeElement;
+    clearTimeout(sheetWipe);
+    el.sheet.style.setProperty('--c', p.color);
+    const bounds = phaseDays(state.cycleLen);
+    el.sheet.innerHTML =
+      '<div class="sheet-top"><span class="sheet-glyph">' + disc(p.color) + '</span>' +
+        '<h2 id="sheet-title">' + p[lang].name + '</h2>' +
+        '<span class="phase-season">' + p[lang].season + ' · ' + t().cycleDay.toLowerCase() + ' ' +
+          bounds[p.id][0] + '–' + bounds[p.id][1] + '</span>' +
+        '<button type="button" class="sheet-close" aria-label="' + t().close + '">' + svg('close') + '</button></div>' +
+      '<details class="sheet-sec" open><summary class="sec-head">' + t().cycleWhat + '</summary>' +
+        '<div class="what-list">' + sentences(p[lang].body).map(function (x) {
+          return '<div class="what-point"><span class="wp-dot"></span><p>' + x + '</p></div>';
+        }).join('') + '</div>' +
+        '<p class="phase-need">' + p[lang].need + '</p></details>';
     const block = tierBlock(t().cycleHelps, p[lang].name, p.items.map(id => ITEM_MAP[id]).filter(Boolean), 'grid');
-    if (block) el.cycleBody.appendChild(block);
+    if (block) el.sheet.appendChild(block);
     const bestie = bestieBlock(p);
-    if (bestie) el.cycleBody.appendChild(bestie);
+    if (bestie) el.sheet.appendChild(bestie);
+    el.scrim.dataset.open = 'true';
+    document.body.style.overflow = 'hidden';
+    el.sheet.scrollTop = 0;
+    el.sheet.querySelector('.sheet-close').addEventListener('click', function () {
+      state.phase = null;
+      closeSheet();
+      renderCycle();
+    });
+    el.sheet.querySelector('.sheet-close').focus();
   }
 
   /* ── quiz ── */
