@@ -704,67 +704,6 @@
   .answer-chip { font-size: 0.78rem; font-weight: 600; padding: 7px 14px; border-radius: 999px; color: var(--ink-soft);
     background: color-mix(in srgb, var(--ac) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ac) 34%, transparent); }
 
-  .bestie { margin-top: 22px; padding: 22px 24px; border-radius: var(--r-lg); text-align: center;
-    background: color-mix(in srgb, var(--c) 6%, var(--surface));
-    border: 1px dashed color-mix(in srgb, var(--c) 34%, transparent); }
-  .bestie .what-list { max-width: 56ch; margin: 0 auto; }
-  .bestie-focus { margin: 0 0 14px; font-size: 0.95rem; color: var(--c); font-weight: 600; }
-  .bestie-note { max-width: 56ch; margin: 16px auto 0; font-size: 0.78rem; line-height: 1.55; color: var(--ink-dim); }
-
-  /* ── mobile: show less at once, without hiding anything for good ── */
-  .concerns-more, .peek-toggle { display: none; }
-  @media (max-width: 720px) {
-    .concerns.clipped .concern:nth-child(n+7) { display: none; }
-    .concerns-more { display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-      flex: 1 0 100%; margin-top: 4px; padding: 13px 20px; border-radius: 999px;
-      font-size: 0.86rem; font-weight: 700; color: var(--ink-soft);
-      background: var(--surface); border: 1px solid var(--border-lift); }
-    .concerns-more::after { content: ''; width: 7px; height: 7px; border-right: 1.6px solid currentColor;
-      border-bottom: 1.6px solid currentColor; transform: rotate(45deg) translate(-2px, -2px);
-      transition: transform .24s var(--ease); }
-    .concerns-more[aria-expanded="true"]::after { transform: rotate(-135deg) translate(-2px, -2px); }
-    .concern { padding: 15px 17px; }
-    .concern-art { width: 34px; height: 34px; }
-    .concern-text { font-size: 0.95rem; }
-    .world-peek { display: none; }
-    .world.peek-open .world-peek { display: flex; }
-    .peek-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%;
-      padding: 13px 20px; font-size: 0.84rem; font-weight: 700; color: var(--c);
-      border-top: none; background: none; }
-    /* topics should read as their own objects, not faint text on white */
-    .world-peek { gap: 7px; padding: 4px 14px 16px; }
-    .world-peek .peek { border-top: none; border-radius: 12px; padding: 12px 14px;
-      background: color-mix(in srgb, var(--c) 12%, var(--surface));
-      border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
-      color: color-mix(in srgb, var(--c) 58%, var(--ink)); font-weight: 700; }
-    .world-peek .peek-dot { width: 22px; height: 22px; }
-    .peek-toggle::after { content: ''; width: 8px; height: 8px; border-right: 1.7px solid currentColor;
-      border-bottom: 1.7px solid currentColor; margin-bottom: 3px;
-      transform: rotate(45deg); transition: transform .24s var(--ease); }
-    .world.peek-open .peek-toggle::after { transform: rotate(225deg); margin: 3px 0 0; }
-    /* the per-topic arrows inside the list are redundant next to the toggle */
-    .world-peek .peek .icon { display: none; }
-    .world-banner { height: 118px; }
-    /* the round arrow on the banner duplicated the toggle chevron below it */
-    .world-head .go { display: none; }
-    .world-name { font-size: 1.34rem; }
-  }
-
-  /* ── consent ── */
-  .consent { position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 140%); z-index: 90;
-    width: min(620px, calc(100% - 32px)); display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
-    padding: 18px 22px; border-radius: var(--r-lg); background: var(--surface);
-    border: 1px solid var(--border-lift); box-shadow: var(--shadow-l);
-    transition: transform .45s var(--ease); }
-  .consent[data-in="true"] { transform: translate(-50%, 0); }
-  .consent p { margin: 0; flex: 1 1 280px; font-size: 0.84rem; line-height: 1.55; color: var(--ink-soft); }
-  .consent-btns { display: flex; gap: 8px; margin-left: auto; }
-  .consent button { padding: 10px 18px; border-radius: 999px; font-size: 0.83rem; font-weight: 700; white-space: nowrap; }
-  .c-no { color: var(--ink-soft); border: 1px solid var(--border-lift); }
-  .c-no:hover { color: var(--accent); border-color: var(--accent); }
-  .c-yes { background: var(--dark); color: #fff; }
-  .c-yes:hover { background: var(--accent); }
-
   /* ── sources ── */
   .sources { padding: 10px 0 0; }
   .sources .wrap { max-width: 760px; }
@@ -2357,8 +2296,6 @@
       savedLabel: 'Můj seznam',
       emptyTitle: 'Na tohle slovo nic nemáme.',
       emptySub: 'Zkuste název živiny (hořčík, jód), potíž (akné, nespavost) nebo období (menopauza).',
-      bestieLabel: 'Jak to řeší jedna hotová receptura',
-      bestieNote: 'Složení přípravku Cycle Bestie, rozepsané podle fází. Uvádíme ho pro představu, jak se dá cyklus pokrýt — není to doporučení ani jediná možná skladba.',
       showAllConcerns: 'Zobrazit všech 12 témat',
       showLessConcerns: 'Zobrazit méně',
       peekToggle: 'Zobrazit témata',
@@ -2475,8 +2412,6 @@
       savedLabel: 'My list',
       emptyTitle: 'No match for that word.',
       emptySub: 'Try a nutrient (magnesium, iodine), a complaint (acne, insomnia) or a stage (menopause).',
-      bestieLabel: 'How one ready-made formulation does it',
-      bestieNote: 'The Cycle Bestie formulation, broken down by phase. Included to show one way of covering the cycle — not a recommendation, and not the only sensible combination.',
       showAllConcerns: 'Show all 12 topics',
       showLessConcerns: 'Show fewer',
       peekToggle: 'Show topics',
@@ -4112,79 +4047,6 @@
 
   /* ── cycle hub ── */
 
-  /* How one commercial formulation splits its ingredients across the cycle.
-     Listed for orientation — a product, not a recommendation. */
-  const BESTIE = {
-    menstruation: {
-      cs: { focus: 'Zaměřeno na zotavení, úlevu a doplnění zásob.',
-            list: ['Vyšší dávka zázvorového extraktu na křeče, záněty a nadýmání',
-                   'Mírná dávka železa, která doplní ztrátu z krvácení',
-                   'Medvědice lékařská (uva ursi) na močové cesty a měchýř',
-                   'L-ergothionein (MitoPrime®) na obnovu buněk a mitochondrií'] },
-      en: { focus: 'Focused on recovery, comfort and replenishment.',
-            list: ['More ginger extract for cramps, inflammation and bloating',
-                   'Gentle iron to replace what the bleed takes',
-                   'Uva ursi for the urinary tract and bladder',
-                   'L-ergothioneine (MitoPrime®) for cellular and mitochondrial recovery'] } },
-    follicular: {
-      cs: { focus: 'Zaměřeno na obnovu, energii a metabolismus hormonů.',
-            list: ['Folát v methylované formě L-5-MTHF kvůli lepšímu vstřebání',
-                   'Vitamin D3 ze standardizovaného zdroje — hormonální signalizace a funkce vaječníků',
-                   'Zinek na ovulaci a hormonální komunikaci',
-                   'DIM na zdravý metabolismus estrogenu',
-                   'CoQ10 a L-ergothionein (MitoPrime®) na buněčnou energii a ochranu folikulu'] },
-      en: { focus: 'Focused on renewal, energy and hormone metabolism.',
-            list: ['Folate as methylated L-5-MTHF for better absorption',
-                   'Standardised vitamin D3 for hormone signalling and ovarian function',
-                   'Zinc for ovulation and hormone communication',
-                   'DIM for healthy estrogen metabolism',
-                   'CoQ10 and L-ergothioneine (MitoPrime®) for cellular energy and follicle protection'] } },
-    ovulation: {
-      cs: { focus: 'Zaměřeno na rovnováhu, krevní cukr a ochranu buněk.',
-            list: ['Dihydroberberin (GlucoVantage®) na krevní cukr a inzulinovou rovnováhu',
-                   'NAC na detoxikační a antioxidační dráhy',
-                   'Selen a extrakt z kopřivy na hormonální rovnováhu a tlumení zánětu',
-                   'L-ergothionein (MitoPrime®) na ochranu mitochondrií při nejvyšší zátěži'] },
-      en: { focus: 'Focused on balance, blood sugar and cellular protection.',
-            list: ['Dihydroberberine (GlucoVantage®) for blood sugar and insulin balance',
-                   'NAC for detox and antioxidant pathways',
-                   'Selenium and nettle extract for hormone balance and inflammation',
-                   'L-ergothioneine (MitoPrime®) for mitochondrial protection at peak activity'] } },
-    luteal: {
-      cs: { focus: 'Zaměřeno na náladu, odolnost vůči stresu a PMS.',
-            list: ['Vitamin B6 v aktivní formě P5P na PMS a podporu progesteronu',
-                   'Nižší dávka hořčíku glycinátu — lépe se snáší a přitom uvolňuje',
-                   'Fosfor na buněčnou energii a minerální rovnováhu',
-                   'Místo rozchodnice SalidroPure® pro stabilnější odolnost vůči stresu',
-                   'Standardizovaný extrakt ze šafránu na náladu',
-                   'Drmek (vitex) na signalizaci progesteronu',
-                   'L-ergothionein (MitoPrime®) na ochranu nervové soustavy'] },
-      en: { focus: 'Focused on mood, stress resilience and PMS.',
-            list: ['Vitamin B6 as active P5P for PMS and progesterone support',
-                   'Less magnesium glycinate — better tolerated, still relaxing',
-                   'Phosphorus for cellular energy and mineral balance',
-                   'SalidroPure® in place of rhodiola for steadier stress resilience',
-                   'A standardised saffron extract for mood',
-                   'Chasteberry (vitex) for progesterone signalling',
-                   'L-ergothioneine (MitoPrime®) for nervous-system protection'] } }
-  };
-
-  function bestieBlock(phase) {
-    const b = BESTIE[phase.id];
-    if (!b) return null;
-    const box = document.createElement('div');
-    box.className = 'bestie';
-    box.style.setProperty('--c', phase.color);
-    box.innerHTML =
-      '<span class="meta-label">' + t().bestieLabel + '</span>' +
-      '<p class="bestie-focus">' + b[lang].focus + '</p>' +
-      '<div class="what-list">' + b[lang].list.map(function (x) {
-        return '<div class="what-point"><span class="wp-dot"></span><p>' + x + '</p></div>';
-      }).join('') + '</div>' +
-      '<p class="bestie-note">' + t().bestieNote + '</p>';
-    return box;
-  }
-
   function renderCycle() {
     el.cycleBack.innerHTML = svg('back') + '<span>' + t().back + '</span>';
     const p = state.phase ? CYCLE.find(x => x.id === state.phase) : null;
@@ -4261,8 +4123,6 @@
         '<p class="phase-need">' + p[lang].need + '</p></details>';
     const block = tierBlock(t().cycleHelps, p[lang].name, p.items.map(id => ITEM_MAP[id]).filter(Boolean), 'grid');
     if (block) el.sheet.appendChild(block);
-    const bestie = bestieBlock(p);
-    if (bestie) el.sheet.appendChild(bestie);
     el.scrim.dataset.open = 'true';
     document.body.style.overflow = 'hidden';
     el.sheet.scrollTop = 0;
