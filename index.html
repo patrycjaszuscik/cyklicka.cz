@@ -607,17 +607,20 @@
   .hit:hover { transform: translateY(-2px); border-color: var(--c); box-shadow: 0 8px 22px color-mix(in srgb, var(--c) 32%, transparent); }
   .hit-dot { width: 22px; height: 22px; flex-shrink: 0; }
   .rows { display: flex; flex-direction: column; gap: 8px; max-width: 720px; margin: 0 auto; width: 100%; }
-  .row { position: relative; overflow: hidden; display: flex; align-items: center; gap: 13px; width: 100%; text-align: left; box-shadow: var(--shadow-s);
-    padding: 12px 52px 12px 17px; border-radius: var(--r-md);
-    background: color-mix(in srgb, var(--c) 13%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--c) 38%, var(--border));
+  /* a desaturated sage at 13% over white is invisible against the page, so the
+     colour is carried by a deepened mix and a solid glyph tile instead */
+  .row { --cs: color-mix(in srgb, var(--c) 72%, var(--ink));
+    position: relative; overflow: hidden; display: flex; align-items: center; gap: 13px; width: 100%; text-align: left; box-shadow: var(--shadow-s);
+    padding: 12px 52px 12px 18px; border-radius: var(--r-md);
+    background: color-mix(in srgb, var(--cs) 15%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--cs) 34%, transparent);
     transition: border-color .24s var(--ease), background .24s var(--ease); }
   /* a colour edge so each herb reads as belonging to its area */
-  .row::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--c); }
-  .row .row-name { color: color-mix(in srgb, var(--c) 55%, var(--ink)); }
-  .row .row-glyph { background: color-mix(in srgb, var(--c) 26%, var(--surface)); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
-  .row:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--border-lift));
-    background: color-mix(in srgb, var(--c) 13%, var(--surface)); }
+  .row::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--cs); }
+  .row .row-name { color: var(--cs); }
+  .row .row-glyph { background: var(--cs); border-color: transparent; color: #fff; }
+  .row:hover { border-color: var(--cs);
+    background: color-mix(in srgb, var(--cs) 24%, var(--surface)); }
   .row-glyph { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; color: var(--c);
     background: color-mix(in srgb, var(--c) 17%, var(--surface-2)); border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
   .row-glyph .art { width: 26px; height: 26px; }
@@ -705,6 +708,32 @@
   .bestie .what-list { max-width: 56ch; margin: 0 auto; }
   .bestie-focus { margin: 0 0 14px; font-size: 0.95rem; color: var(--c); font-weight: 600; }
   .bestie-note { max-width: 56ch; margin: 16px auto 0; font-size: 0.78rem; line-height: 1.55; color: var(--ink-dim); }
+
+  /* ── mobile: show less at once, without hiding anything for good ── */
+  .concerns-more, .peek-toggle { display: none; }
+  @media (max-width: 720px) {
+    .concerns.clipped .concern:nth-child(n+7) { display: none; }
+    .concerns-more { display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      flex: 1 0 100%; margin-top: 4px; padding: 13px 20px; border-radius: 999px;
+      font-size: 0.86rem; font-weight: 700; color: var(--ink-soft);
+      background: var(--surface); border: 1px solid var(--border-lift); }
+    .concerns-more::after { content: ''; width: 7px; height: 7px; border-right: 1.6px solid currentColor;
+      border-bottom: 1.6px solid currentColor; transform: rotate(45deg) translate(-2px, -2px); }
+    .concern { padding: 15px 17px; }
+    .concern-art { width: 34px; height: 34px; }
+    .concern-text { font-size: 0.95rem; }
+    .world-peek { display: none; }
+    .world.peek-open .world-peek { display: flex; }
+    .peek-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%;
+      padding: 13px 20px; font-size: 0.84rem; font-weight: 700; color: var(--c);
+      border-top: 1px solid var(--border); background: none; }
+    .peek-toggle::after { content: ''; width: 7px; height: 7px; border-right: 1.6px solid currentColor;
+      border-bottom: 1.6px solid currentColor; transform: rotate(45deg) translateY(-2px);
+      transition: transform .24s var(--ease); }
+    .world.peek-open .peek-toggle::after { transform: rotate(-135deg) translate(-2px, 2px); }
+    .world-banner { height: 118px; }
+    .world-name { font-size: 1.34rem; }
+  }
 
   /* ── consent ── */
   .consent { position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 140%); z-index: 90;
@@ -2254,8 +2283,8 @@
       guideTitle: 'Začneme u tebe',
       guideDesc: 'Pět otázek a uvidíš, co by ti mohlo chybět.',
       guideGo: 'Pojďme na to',
-      feelsLabel: 'Co se vás týká?',
-      feelsSub: 'U každého tématu si projdeme, co se v těle děje — a co mu dodat, aby si dokázalo pomoct samo.',
+      feelsLabel: 'Co teď řešíš?',
+      feelsSub: 'U každého tématu najdeš, co se v těle děje a které živiny ti v tom pomůžou.',
       worldsLabel: 'Šest oblastí, kde hledat',
       worldsSub: 'V každé oblasti najdete témata a k nim živiny, které s nimi souvisí.',
       back: 'Zpět',
@@ -2298,6 +2327,8 @@
       emptySub: 'Zkuste název živiny (hořčík, jód), potíž (akné, nespavost) nebo období (menopauza).',
       bestieLabel: 'Jak to řeší jedna hotová receptura',
       bestieNote: 'Složení přípravku Cycle Bestie, rozepsané podle fází. Uvádíme ho pro představu, jak se dá cyklus pokrýt — není to doporučení ani jediná možná skladba.',
+      showAllConcerns: 'Zobrazit všech 12 témat',
+      peekToggle: 'Témata v oblasti',
       sourcesTitle: 'Zdroje',
       sourcesIntro: 'Klíčové studie, o které se opíráme — rok, typ studie a počet účastníků, ať víte, jak silný důkaz za tvrzením stojí. Klepnutím otevřete záznam na PubMedu. Řazeno od nejnovějších.',
       sourcesStudies: 'Klinické studie a přehledy',
@@ -2368,8 +2399,8 @@
       guideTitle: 'Let’s start with you',
       guideDesc: 'Five questions, and you’ll see what you might be missing.',
       guideGo: 'Let’s go',
-      feelsLabel: 'Pick what applies to you',
-      feelsSub: 'For each topic we go through what the body is doing — and what to give it so it can help itself.',
+      feelsLabel: 'What are you dealing with?',
+      feelsSub: 'For each topic you will find what the body is doing and which nutrients help with it.',
       worldsLabel: 'Six areas to explore',
       worldsSub: 'Each area opens into its topics and the nutrients behind them.',
       back: 'Back',
@@ -2412,6 +2443,8 @@
       emptySub: 'Try a nutrient (magnesium, iodine), a complaint (acne, insomnia) or a stage (menopause).',
       bestieLabel: 'How one ready-made formulation does it',
       bestieNote: 'The Cycle Bestie formulation, broken down by phase. Included to show one way of covering the cycle — not a recommendation, and not the only sensible combination.',
+      showAllConcerns: 'Show all 12 topics',
+      peekToggle: 'Topics in this area',
       sourcesTitle: 'Sources',
       sourcesIntro: 'The key studies behind what we say — year, design and participant numbers, so you can judge the strength of the evidence. Tap any one to open its record on PubMed. Newest first.',
       sourcesStudies: 'Clinical trials and reviews',
@@ -3976,6 +4009,17 @@
       b.addEventListener('click', () => go({ view: 'results', world: TOPIC_MAP[c.topic].world, topic: c.topic, query: '', savedOnly: false }));
       el.concerns.appendChild(b);
     });
+    /* on a phone twelve rows at once is a wall; show six and let her open the rest */
+    el.concerns.classList.add('clipped');
+    const moreBtn = document.createElement('button');
+    moreBtn.type = 'button';
+    moreBtn.className = 'concerns-more';
+    moreBtn.textContent = t().showAllConcerns;
+    moreBtn.addEventListener('click', function () {
+      el.concerns.classList.remove('clipped');
+      moreBtn.remove();
+    });
+    el.concerns.appendChild(moreBtn);
 
     el.worldsLabel.textContent = t().worldsLabel;
     el.worldsSub.textContent = t().worldsSub;
@@ -4028,6 +4072,18 @@
           : { view: 'world', world: world.id, topic: null, savedOnly: false }));
         chips.appendChild(more);
       }
+      /* on a phone six cards with their topic lists is a very long scroll,
+         so the topics fold away behind a toggle there (CSS shows it on mobile only) */
+      const peekBtn = document.createElement('button');
+      peekBtn.type = 'button';
+      peekBtn.className = 'peek-toggle';
+      peekBtn.textContent = t().peekToggle;
+      peekBtn.setAttribute('aria-expanded', 'false');
+      peekBtn.addEventListener('click', function () {
+        const open = card.classList.toggle('peek-open');
+        peekBtn.setAttribute('aria-expanded', String(open));
+      });
+      card.appendChild(peekBtn);
       card.appendChild(chips);
       el.worlds.appendChild(card);
     });
