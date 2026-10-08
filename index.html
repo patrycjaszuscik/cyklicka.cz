@@ -719,7 +719,9 @@
       font-size: 0.86rem; font-weight: 700; color: var(--ink-soft);
       background: var(--surface); border: 1px solid var(--border-lift); }
     .concerns-more::after { content: ''; width: 7px; height: 7px; border-right: 1.6px solid currentColor;
-      border-bottom: 1.6px solid currentColor; transform: rotate(45deg) translate(-2px, -2px); }
+      border-bottom: 1.6px solid currentColor; transform: rotate(45deg) translate(-2px, -2px);
+      transition: transform .24s var(--ease); }
+    .concerns-more[aria-expanded="true"]::after { transform: rotate(-135deg) translate(-2px, -2px); }
     .concern { padding: 15px 17px; }
     .concern-art { width: 34px; height: 34px; }
     .concern-text { font-size: 0.95rem; }
@@ -728,10 +730,12 @@
     .peek-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%;
       padding: 13px 20px; font-size: 0.84rem; font-weight: 700; color: var(--c);
       border-top: 1px solid var(--border); background: none; }
-    .peek-toggle::after { content: ''; width: 7px; height: 7px; border-right: 1.6px solid currentColor;
-      border-bottom: 1.6px solid currentColor; transform: rotate(45deg) translateY(-2px);
-      transition: transform .24s var(--ease); }
-    .world.peek-open .peek-toggle::after { transform: rotate(-135deg) translate(-2px, 2px); }
+    .peek-toggle::after { content: ''; width: 8px; height: 8px; border-right: 1.7px solid currentColor;
+      border-bottom: 1.7px solid currentColor; margin-bottom: 3px;
+      transform: rotate(45deg); transition: transform .24s var(--ease); }
+    .world.peek-open .peek-toggle::after { transform: rotate(225deg); margin: 3px 0 0; }
+    /* the per-topic arrows inside the list are redundant next to the toggle */
+    .world-peek .peek .icon { display: none; }
     .world-banner { height: 118px; }
     .world-name { font-size: 1.34rem; }
   }
@@ -2332,7 +2336,9 @@
       bestieLabel: 'Jak to řeší jedna hotová receptura',
       bestieNote: 'Složení přípravku Cycle Bestie, rozepsané podle fází. Uvádíme ho pro představu, jak se dá cyklus pokrýt — není to doporučení ani jediná možná skladba.',
       showAllConcerns: 'Zobrazit všech 12 témat',
-      peekToggle: 'Témata v oblasti',
+      showLessConcerns: 'Zobrazit méně',
+      peekToggle: 'Zobrazit témata',
+      peekToggleOpen: 'Skrýt témata',
       sourcesTitle: 'Zdroje',
       sourcesIntro: 'Klíčové studie, o které se opíráme — rok, typ studie a počet účastníků, ať víte, jak silný důkaz za tvrzením stojí. Klepnutím otevřete záznam na PubMedu. Řazeno od nejnovějších.',
       sourcesStudies: 'Klinické studie a přehledy',
@@ -2448,7 +2454,9 @@
       bestieLabel: 'How one ready-made formulation does it',
       bestieNote: 'The Cycle Bestie formulation, broken down by phase. Included to show one way of covering the cycle — not a recommendation, and not the only sensible combination.',
       showAllConcerns: 'Show all 12 topics',
-      peekToggle: 'Topics in this area',
+      showLessConcerns: 'Show fewer',
+      peekToggle: 'Show topics',
+      peekToggleOpen: 'Hide topics',
       sourcesTitle: 'Sources',
       sourcesIntro: 'The key studies behind what we say — year, design and participant numbers, so you can judge the strength of the evidence. Tap any one to open its record on PubMed. Newest first.',
       sourcesStudies: 'Clinical trials and reviews',
@@ -4020,9 +4028,13 @@
     moreBtn.type = 'button';
     moreBtn.className = 'concerns-more';
     moreBtn.textContent = t().showAllConcerns;
+    moreBtn.setAttribute('aria-expanded', 'false');
     moreBtn.addEventListener('click', function () {
-      el.concerns.classList.remove('clipped');
-      moreBtn.remove();
+      const open = !el.concerns.classList.toggle('clipped');
+      moreBtn.textContent = open ? t().showLessConcerns : t().showAllConcerns;
+      moreBtn.setAttribute('aria-expanded', String(open));
+      /* collapsing from far down the list would otherwise leave her mid-page */
+      if (!open) el.feelsPanel.scrollIntoView({ block: 'start', behavior: 'smooth' });
     });
     el.concerns.appendChild(moreBtn);
 
@@ -4058,25 +4070,14 @@
       const entries = world.special === 'cycle'
         ? CYCLE.map(p => ({ label: p[lang].name, go: { view: 'cycle', world: 'cycle', phase: p.id } }))
         : TOPICS.filter(x => x.world === world.id).map(x => ({ label: x[lang].name, go: { view: 'results', world: world.id, topic: x.id, query: '', savedOnly: false } }));
-      const shown = entries.slice(0, 4);
-      shown.forEach(e => {
+      entries.forEach(e => {
         const row = document.createElement('button');
         row.type = 'button';
         row.className = 'peek';
-        row.innerHTML = '<span class="peek-dot">' + disc(world.color) + '</span><span>' + e.label + '</span>' + svg('arrow');
+        row.innerHTML = '<span class="peek-dot">' + disc(world.color) + '</span><span>' + e.label + '</span>';
         row.addEventListener('click', () => go(e.go));
         chips.appendChild(row);
       });
-      if (entries.length > shown.length) {
-        const more = document.createElement('button');
-        more.type = 'button';
-        more.className = 'peek peek-more';
-        more.innerHTML = '<span class="peek-dot">' + disc(world.color) + '</span><span>' + t().more + '</span>' + svg('arrow');
-        more.addEventListener('click', () => go(world.special === 'cycle'
-          ? { view: 'cycle', world: 'cycle', phase: null }
-          : { view: 'world', world: world.id, topic: null, savedOnly: false }));
-        chips.appendChild(more);
-      }
       /* on a phone six cards with their topic lists is a very long scroll,
          so the topics fold away behind a toggle there (CSS shows it on mobile only) */
       const peekBtn = document.createElement('button');
@@ -4087,6 +4088,7 @@
       peekBtn.addEventListener('click', function () {
         const open = card.classList.toggle('peek-open');
         peekBtn.setAttribute('aria-expanded', String(open));
+        peekBtn.textContent = open ? t().peekToggleOpen : t().peekToggle;
       });
       card.appendChild(peekBtn);
       card.appendChild(chips);
