@@ -857,6 +857,15 @@
   .mix-box strong { color: var(--coral); }
   .sheet-sec { margin-bottom: 16px; padding: 18px 18px 16px; border-radius: var(--r-md);
     background: var(--surface); border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(30,10,20,.04); }
+  .sheet-sec summary { cursor: pointer; list-style: none; }
+  .sheet-sec summary::-webkit-details-marker { display: none; }
+  details.sheet-sec > summary.sec-head { margin-bottom: 0; padding-bottom: 14px; }
+  details.sheet-sec[open] > summary.sec-head { margin-bottom: 16px; }
+  details.sheet-sec > summary.sec-head::before { content: ''; position: absolute; right: 2px; top: 4px;
+    width: 8px; height: 8px; border-right: 1.7px solid var(--ink-dim); border-bottom: 1.7px solid var(--ink-dim);
+    transform: rotate(45deg); transition: transform .24s var(--ease); }
+  details.sheet-sec[open] > summary.sec-head::before { transform: rotate(225deg); }
+  details.sheet-sec > summary.sec-head:hover { color: var(--accent); }
   .sec-head { position: relative; display: block; margin: -2px -18px 16px; padding: 0 18px 12px;
     font-family: var(--font-ui); font-size: 0.96rem; font-weight: 700; letter-spacing: -.01em; color: var(--ink); text-align: center;
     border-bottom: 1px solid var(--border); }
@@ -3319,8 +3328,8 @@
   function buyBlock(item) {
     const b = BUY[item.id];
     if (!b) return '';
-    return '<div class="sheet-sec buy"><h3 class="sec-head">' + t().buyLabel + '</h3>' +
-      '<ul class="buy-list">' + b[lang].map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>';
+    return '<details class="sheet-sec buy"><summary class="sec-head">' + t().buyLabel + '</summary>' +
+      '<ul class="buy-list">' + b[lang].map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></details>';
   }
 
   /* what it actually does in the body, and why that matters for women */
@@ -3637,8 +3646,8 @@
     const f = FORMS[item.id];
     if (!f) return '';
     const d = f[lang];
-    return '<div class="sheet-sec forms">' +
-      '<h3 class="sec-head">' + t().formsLabel + '</h3>' +
+    return '<details class="sheet-sec forms">' +
+      '<summary class="sec-head">' + t().formsLabel + '</summary>' +
       '<p class="forms-intro">' + d.intro + '</p>' +
       '<div class="form-list">' + d.list.map(function (x) {
         return '<div class="form-row"><div class="form-top"><b>' + x.n + '</b><span>' + x.f + '</span></div>' +
@@ -3648,7 +3657,7 @@
         '<div class="mix-points">' + sentences(d.mix).map(function (x) {
           return '<div class="mix-point"><span class="mp-dot"></span><p>' + x + '</p></div>';
         }).join('') + '</div></div>' +
-    '</div>';
+    '</details>';
   }
 
   function gradeBlock(item) {
@@ -4695,16 +4704,16 @@
         '<div class="dose-note">' + item.d.v + ' ' + item.d.u + ' ' + t()[item.d.per] +
         (foodLine ? ' · ' + foodLine : '') + '</div></div>' +
       safetyBlock(item) +
-      '<div class="sheet-sec"><h3 class="sec-head">' + t().helpsWith + '</h3><div class="tag-row">' + tags + '</div></div>' +
-      '<div class="sheet-sec"><h3 class="sec-head">' + t().whatLabel + '</h3>' +
+      '<details class="sheet-sec"><summary class="sec-head">' + t().helpsWith + '</summary><div class="tag-row">' + tags + '</div></details>' +
+      '<details class="sheet-sec" open><summary class="sec-head">' + t().whatLabel + '</summary>' +
         helpsRow(item, 'helps helps-lg') +
-        whatList(item) + '</div>' +
-      '<div class="sheet-sec persp"><h3 class="sec-head">' + t().perspectives + '</h3>' +
+        whatList(item) + '</details>' +
+      '<details class="sheet-sec persp"><summary class="sec-head">' + t().perspectives + '</summary>' +
         '<div class="persp-tabs" role="tablist">' +
           PERSPECTIVES.map((p, i) => '<button type="button" class="persp-tab" role="tab" data-p="' + p.id +
             '" style="--pc:' + p.color + '" aria-selected="' + (i === 0) + '">' + svg(p.icon) +
             '<span>' + t()[p.label] + '</span></button>').join('') +
-        '</div><div class="persp-body" id="persp-body"></div></div>' +
+        '</div><div class="persp-body" id="persp-body"></div></details>' +
       '<div class="note-box">' + svg('info') + '<p><strong>' + t().caution + ':</strong> ' + item[lang].note + '</p></div>' +
       formsBlock(item) + buyBlock(item) +
       '<button type="button" class="sheet-save" aria-pressed="' + isSaved + '">' + svg('bookmark') +
