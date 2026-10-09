@@ -421,9 +421,8 @@
   @media (max-width: 720px) { .concern { flex: 0 1 100%; } }
   .concern {
     display: flex; align-items: center; gap: 15px; padding: 18px 20px; text-align: left; width: 100%;
-    border-radius: var(--r-md); border: 1px solid color-mix(in srgb, var(--c) 34%, transparent);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--c) 15%, var(--surface)),
-      color-mix(in srgb, var(--c) 6%, var(--surface)));
+    border-radius: var(--r-md); border: 1px solid color-mix(in srgb, var(--c) 20%, var(--border));
+    background: var(--surface);
     box-shadow: 0 1px 2px rgba(30,10,20,.05), 0 8px 22px color-mix(in srgb, var(--c) 15%, transparent);
     transition: border-color .24s var(--ease), box-shadow .24s var(--ease), transform .24s var(--ease);
   }
@@ -433,12 +432,10 @@
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--o) 24%, transparent), 0 6px 16px color-mix(in srgb, var(--o) 28%, transparent);
     transition: box-shadow .26s var(--ease), transform .26s var(--ease); }
   .concern:hover .disc { transform: scale(1.06); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--o) 34%, transparent), 0 8px 22px color-mix(in srgb, var(--o) 42%, transparent); }
-  .concern-text { font-family: var(--font-ui); font-weight: 700; font-size: 1.02rem; line-height: 1.35;
-    color: color-mix(in srgb, var(--c) 40%, var(--ink)); letter-spacing: -.01em; }
+  .concern-text { font-family: var(--font-ui); font-weight: 600; font-size: 1.02rem; line-height: 1.35; color: var(--ink); letter-spacing: -.01em; }
   .concern .icon { width: 18px; height: 18px; margin-left: auto; color: var(--ink-dim); flex-shrink: 0;
     transition: transform .26s var(--ease), color .26s var(--ease); }
-  .concern:hover { transform: translateY(-3px); border-color: var(--c);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--c) 24%, var(--surface)), color-mix(in srgb, var(--c) 11%, var(--surface)));
+  .concern:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 58%, transparent);
     box-shadow: 0 2px 6px rgba(30,10,20,.07), 0 16px 40px color-mix(in srgb, var(--c) 36%, transparent); }
   
   .concern:hover .icon { transform: translateX(4px); color: var(--c); }
@@ -708,8 +705,23 @@
     background: color-mix(in srgb, var(--ac) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ac) 34%, transparent); }
 
 
-  /* ── mobile: show less at once, without hiding anything for good ── */
-  .concerns-more, .peek-toggle { display: none; }
+  /* ── show less at once, without hiding anything for good ── */
+  .concerns-more { display: none; }
+  /* the topic list is folded at every width; the card stays a card */
+  .world-peek { display: none; gap: 7px; padding: 2px 16px 16px; }
+  .world.peek-open .world-peek { display: flex; }
+  .peek-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%;
+    padding: 14px 20px; font-size: 0.84rem; font-weight: 700; color: var(--c);
+    border-top: none; background: none; }
+  .peek-toggle:hover { background: color-mix(in srgb, var(--c) 8%, transparent); }
+  .world-peek .peek { border-top: none; border-radius: 12px; padding: 11px 14px;
+    background: color-mix(in srgb, var(--c) 12%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+    color: color-mix(in srgb, var(--c) 58%, var(--ink)); font-weight: 700; }
+  .world-peek .peek:hover { background: color-mix(in srgb, var(--c) 22%, var(--surface)); padding-left: 16px; }
+  .world-peek .peek-dot { width: 20px; height: 20px; }
+  /* equal cards whether their list is open or shut */
+  .worlds { align-items: start; }
   @media (max-width: 720px) {
     .concerns.clipped .concern:nth-child(n+7) { display: none; }
     .concerns-more { display: inline-flex; align-items: center; justify-content: center; gap: 7px;
@@ -723,17 +735,6 @@
     .concern { padding: 15px 17px; }
     .concern-art { width: 34px; height: 34px; }
     .concern-text { font-size: 0.95rem; }
-    .world-peek { display: none; }
-    .world.peek-open .world-peek { display: flex; }
-    .peek-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%;
-      padding: 13px 20px; font-size: 0.84rem; font-weight: 700; color: var(--c);
-      border-top: none; background: none; }
-    /* topics should read as their own objects, not faint text on white */
-    .world-peek { gap: 7px; padding: 4px 14px 16px; }
-    .world-peek .peek { border-top: none; border-radius: 12px; padding: 12px 14px;
-      background: color-mix(in srgb, var(--c) 12%, var(--surface));
-      border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
-      color: color-mix(in srgb, var(--c) 58%, var(--ink)); font-weight: 700; }
     .world-peek .peek-dot { width: 22px; height: 22px; }
     .peek-toggle::after { content: ''; width: 8px; height: 8px; border-right: 1.7px solid currentColor;
       border-bottom: 1.7px solid currentColor; margin-bottom: 3px;
@@ -862,27 +863,34 @@
   .expert span { font-size: 0.75rem; color: var(--ink-soft); }
   .mix-box p { margin: 0; font-size: 0.85rem; line-height: 1.55; color: var(--ink-soft); }
   .mix-box strong { color: var(--coral); }
-  .sheet-sec { margin-bottom: 12px; padding: 18px 18px 16px; border-radius: var(--r-md);
-    background: color-mix(in srgb, var(--c) 8%, var(--surface-2));
-    border: 1px solid color-mix(in srgb, var(--c) 22%, var(--border));
+  .sheet-sec { margin-bottom: 10px; padding: 18px 18px 16px; border-radius: var(--r-lg);
+    background: var(--surface); border: 1px solid var(--border);
     box-shadow: 0 1px 2px rgba(30,10,20,.04); }
-  details.sheet-sec:hover { border-color: color-mix(in srgb, var(--c) 40%, transparent); }
-  details.sheet-sec[open] { background: var(--surface);
-    border-color: color-mix(in srgb, var(--c) 32%, transparent);
-    box-shadow: 0 2px 6px rgba(30,10,20,.05), 0 10px 26px color-mix(in srgb, var(--c) 12%, transparent); }
-  details.sheet-sec > summary.sec-head { color: color-mix(in srgb, var(--c) 46%, var(--ink)); }
+  /* a closed row is a soft gradient chip; the open one lifts to white */
+  details.sheet-sec { padding: 0; overflow: hidden; border-color: transparent;
+    background: linear-gradient(145deg, color-mix(in srgb, var(--c) 16%, var(--surface)) 0%,
+      color-mix(in srgb, var(--c) 7%, var(--surface)) 100%);
+    transition: background .3s var(--ease), box-shadow .3s var(--ease); }
+  details.sheet-sec:hover { background: linear-gradient(145deg, color-mix(in srgb, var(--c) 24%, var(--surface)) 0%,
+      color-mix(in srgb, var(--c) 12%, var(--surface)) 100%); }
+  details.sheet-sec[open] { background: var(--surface); padding-bottom: 18px;
+    border-color: color-mix(in srgb, var(--c) 26%, transparent);
+    box-shadow: 0 2px 8px rgba(30,10,20,.05), 0 14px 32px color-mix(in srgb, var(--c) 14%, transparent); }
+  details.sheet-sec > summary.sec-head { color: color-mix(in srgb, var(--c) 52%, var(--ink)); }
   .sheet-sec summary { cursor: pointer; list-style: none; }
   .sheet-sec summary::-webkit-details-marker { display: none; }
   details.sheet-sec { padding-bottom: 0; }
-  details.sheet-sec > summary.sec-head { margin: -2px -18px 0; padding: 0 34px 0 18px; border-bottom: none; }
+  details.sheet-sec > summary.sec-head { margin: 0; padding: 17px 42px; border-bottom: none;
+    text-align: center; font-size: 1.02rem; }
   details.sheet-sec > summary.sec-head::after { display: none; }
-  details.sheet-sec[open] > summary.sec-head { margin-bottom: 14px; padding-bottom: 12px;
+  details.sheet-sec[open] > summary.sec-head { margin: 0 18px 14px; padding: 17px 24px 13px;
     border-bottom: 1px solid var(--border); }
-  details.sheet-sec[open] { padding-bottom: 16px; }
-  details.sheet-sec > summary.sec-head::before { content: ''; position: absolute; right: 18px; top: 50%;
-    margin-top: -5px;
-    width: 8px; height: 8px; border-right: 1.7px solid var(--ink-dim); border-bottom: 1.7px solid var(--ink-dim);
-    transform: rotate(45deg); transition: transform .24s var(--ease); }
+  details.sheet-sec[open] > *:not(summary) { margin-left: 18px; margin-right: 18px; }
+  details.sheet-sec > summary.sec-head::before { content: ''; position: absolute; right: 22px; top: 50%;
+    margin-top: -6px; width: 8px; height: 8px; opacity: .6;
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: rotate(45deg); transition: transform .24s var(--ease), opacity .24s var(--ease); }
+  details.sheet-sec:hover > summary.sec-head::before { opacity: 1; }
   details.sheet-sec[open] > summary.sec-head::before { transform: rotate(225deg); }
   details.sheet-sec > summary.sec-head:hover { color: var(--accent); }
   .sec-head { position: relative; display: block; margin: -2px -18px 16px; padding: 0 18px 12px;
