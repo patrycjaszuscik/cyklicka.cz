@@ -330,7 +330,7 @@
   .dose-note { margin-top: 10px; font-size: 0.82rem; color: var(--ink-dim); }
 
   /* ── top bar ── */
-  .topbar { position: sticky; top: 0; z-index: 30; background: rgba(251,245,242,.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+  .topbar { position: sticky; top: 0; z-index: 30; background: rgba(251,245,242,.9); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
   .topbar .wrap { display: flex; align-items: center; gap: 14px; padding-top: 12px; padding-bottom: 12px; }
   .brand-mark { display: inline-flex; align-items: center; gap: 10px; }
   .brand-mark .art { width: 26px; height: 26px; }
@@ -736,7 +736,7 @@
   .src-book span { font-size: 0.78rem; color: var(--ink-soft); }
 
   /* ── sheet ── */
-  .scrim { position: fixed; inset: 0; z-index: 60; display: grid; place-items: end center; background: rgba(42,12,30,.44); backdrop-filter: blur(8px);
+  .scrim { position: fixed; inset: 0; z-index: 60; display: grid; place-items: end center; background: rgba(42,12,30,.44); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
     opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .3s var(--ease), visibility 0s linear .3s; }
   .scrim[data-open="true"] { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity .3s var(--ease), visibility 0s; }
   @media (min-width: 620px) { .scrim { place-items: center; } }
