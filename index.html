@@ -421,8 +421,9 @@
   @media (max-width: 720px) { .concern { flex: 0 1 100%; } }
   .concern {
     display: flex; align-items: center; gap: 15px; padding: 18px 20px; text-align: left; width: 100%;
-    border-radius: var(--r-md); border: 1px solid color-mix(in srgb, var(--c) 20%, var(--border));
-    background: var(--surface);
+    border-radius: var(--r-md); border: 1px solid color-mix(in srgb, var(--c) 34%, transparent);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c) 15%, var(--surface)),
+      color-mix(in srgb, var(--c) 6%, var(--surface)));
     box-shadow: 0 1px 2px rgba(30,10,20,.05), 0 8px 22px color-mix(in srgb, var(--c) 15%, transparent);
     transition: border-color .24s var(--ease), box-shadow .24s var(--ease), transform .24s var(--ease);
   }
@@ -432,10 +433,12 @@
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--o) 24%, transparent), 0 6px 16px color-mix(in srgb, var(--o) 28%, transparent);
     transition: box-shadow .26s var(--ease), transform .26s var(--ease); }
   .concern:hover .disc { transform: scale(1.06); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--o) 34%, transparent), 0 8px 22px color-mix(in srgb, var(--o) 42%, transparent); }
-  .concern-text { font-family: var(--font-ui); font-weight: 600; font-size: 1.02rem; line-height: 1.35; color: var(--ink); letter-spacing: -.01em; }
+  .concern-text { font-family: var(--font-ui); font-weight: 700; font-size: 1.02rem; line-height: 1.35;
+    color: color-mix(in srgb, var(--c) 40%, var(--ink)); letter-spacing: -.01em; }
   .concern .icon { width: 18px; height: 18px; margin-left: auto; color: var(--ink-dim); flex-shrink: 0;
     transition: transform .26s var(--ease), color .26s var(--ease); }
-  .concern:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 58%, transparent);
+  .concern:hover { transform: translateY(-3px); border-color: var(--c);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c) 24%, var(--surface)), color-mix(in srgb, var(--c) 11%, var(--surface)));
     box-shadow: 0 2px 6px rgba(30,10,20,.07), 0 16px 40px color-mix(in srgb, var(--c) 36%, transparent); }
   
   .concern:hover .icon { transform: translateX(4px); color: var(--c); }
@@ -704,6 +707,61 @@
   .answer-chip { font-size: 0.78rem; font-weight: 600; padding: 7px 14px; border-radius: 999px; color: var(--ink-soft);
     background: color-mix(in srgb, var(--ac) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ac) 34%, transparent); }
 
+
+  /* ── mobile: show less at once, without hiding anything for good ── */
+  .concerns-more, .peek-toggle { display: none; }
+  @media (max-width: 720px) {
+    .concerns.clipped .concern:nth-child(n+7) { display: none; }
+    .concerns-more { display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      flex: 1 0 100%; margin-top: 4px; padding: 13px 20px; border-radius: 999px;
+      font-size: 0.86rem; font-weight: 700; color: var(--ink-soft);
+      background: var(--surface); border: 1px solid var(--border-lift); }
+    .concerns-more::after { content: ''; width: 7px; height: 7px; border-right: 1.6px solid currentColor;
+      border-bottom: 1.6px solid currentColor; transform: rotate(45deg) translate(-2px, -2px);
+      transition: transform .24s var(--ease); }
+    .concerns-more[aria-expanded="true"]::after { transform: rotate(-135deg) translate(-2px, -2px); }
+    .concern { padding: 15px 17px; }
+    .concern-art { width: 34px; height: 34px; }
+    .concern-text { font-size: 0.95rem; }
+    .world-peek { display: none; }
+    .world.peek-open .world-peek { display: flex; }
+    .peek-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%;
+      padding: 13px 20px; font-size: 0.84rem; font-weight: 700; color: var(--c);
+      border-top: none; background: none; }
+    /* topics should read as their own objects, not faint text on white */
+    .world-peek { gap: 7px; padding: 4px 14px 16px; }
+    .world-peek .peek { border-top: none; border-radius: 12px; padding: 12px 14px;
+      background: color-mix(in srgb, var(--c) 12%, var(--surface));
+      border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+      color: color-mix(in srgb, var(--c) 58%, var(--ink)); font-weight: 700; }
+    .world-peek .peek-dot { width: 22px; height: 22px; }
+    .peek-toggle::after { content: ''; width: 8px; height: 8px; border-right: 1.7px solid currentColor;
+      border-bottom: 1.7px solid currentColor; margin-bottom: 3px;
+      transform: rotate(45deg); transition: transform .24s var(--ease); }
+    .world.peek-open .peek-toggle::after { transform: rotate(225deg); margin: 3px 0 0; }
+    /* the per-topic arrows inside the list are redundant next to the toggle */
+    .world-peek .peek .icon { display: none; }
+    .world-banner { height: 118px; }
+    /* the round arrow on the banner duplicated the toggle chevron below it */
+    .world-head .go { display: none; }
+    .world-name { font-size: 1.34rem; }
+  }
+
+  /* ── consent ── */
+  .consent { position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 140%); z-index: 90;
+    width: min(620px, calc(100% - 32px)); display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+    padding: 18px 22px; border-radius: var(--r-lg); background: var(--surface);
+    border: 1px solid var(--border-lift); box-shadow: var(--shadow-l);
+    transition: transform .45s var(--ease); }
+  .consent[data-in="true"] { transform: translate(-50%, 0); }
+  .consent p { margin: 0; flex: 1 1 280px; font-size: 0.84rem; line-height: 1.55; color: var(--ink-soft); }
+  .consent-btns { display: flex; gap: 8px; margin-left: auto; }
+  .consent button { padding: 10px 18px; border-radius: 999px; font-size: 0.83rem; font-weight: 700; white-space: nowrap; }
+  .c-no { color: var(--ink-soft); border: 1px solid var(--border-lift); }
+  .c-no:hover { color: var(--accent); border-color: var(--accent); }
+  .c-yes { background: var(--dark); color: #fff; }
+  .c-yes:hover { background: var(--accent); }
+
   /* ── sources ── */
   .sources { padding: 10px 0 0; }
   .sources .wrap { max-width: 760px; }
@@ -804,8 +862,15 @@
   .expert span { font-size: 0.75rem; color: var(--ink-soft); }
   .mix-box p { margin: 0; font-size: 0.85rem; line-height: 1.55; color: var(--ink-soft); }
   .mix-box strong { color: var(--coral); }
-  .sheet-sec { margin-bottom: 16px; padding: 18px 18px 16px; border-radius: var(--r-md);
-    background: var(--surface); border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(30,10,20,.04); }
+  .sheet-sec { margin-bottom: 12px; padding: 18px 18px 16px; border-radius: var(--r-md);
+    background: color-mix(in srgb, var(--c) 8%, var(--surface-2));
+    border: 1px solid color-mix(in srgb, var(--c) 22%, var(--border));
+    box-shadow: 0 1px 2px rgba(30,10,20,.04); }
+  details.sheet-sec:hover { border-color: color-mix(in srgb, var(--c) 40%, transparent); }
+  details.sheet-sec[open] { background: var(--surface);
+    border-color: color-mix(in srgb, var(--c) 32%, transparent);
+    box-shadow: 0 2px 6px rgba(30,10,20,.05), 0 10px 26px color-mix(in srgb, var(--c) 12%, transparent); }
+  details.sheet-sec > summary.sec-head { color: color-mix(in srgb, var(--c) 46%, var(--ink)); }
   .sheet-sec summary { cursor: pointer; list-style: none; }
   .sheet-sec summary::-webkit-details-marker { display: none; }
   details.sheet-sec { padding-bottom: 0; }
@@ -2251,8 +2316,8 @@
       heroTitle: 'Doplňky stravy pro ženy, <em>srozumitelně</em>.',
       heroSub: 'Vitaminy, minerály a byliny přehledně vysvětlené — abys svému tělu rozuměla a uměla si pomoct sama.',
       searchPlaceholder: 'Hořčík, akné, menopauza, těhotenství…',
-      guideTitle: 'Začneme u tebe',
-      guideDesc: 'Pět otázek a uvidíš, co by ti mohlo chybět.',
+      guideTitle: 'Poradíme ti, čím začít',
+      guideDesc: 'Pět otázek o tobě a tvém dni. Pak ti ukážeme, co by ti mohlo chybět — a proč zrovna to.',
       guideGo: 'Pojďme na to',
       feelsLabel: 'Co teď řešíš?',
       feelsSub: 'U každého tématu najdeš, co se v těle děje a které živiny ti v tom pomůžou.',
@@ -2367,8 +2432,8 @@
       heroTitle: 'Supplements for women, <em>made clear</em>.',
       heroSub: 'Vitamins, minerals and herbs explained clearly — so you understand your body and can help yourself.',
       searchPlaceholder: 'Magnesium, acne, menopause, pregnancy…',
-      guideTitle: 'Let’s start with you',
-      guideDesc: 'Five questions, and you’ll see what you might be missing.',
+      guideTitle: 'We’ll help you start',
+      guideDesc: 'Five questions about you and your day. Then we show what you may be short of — and why that.',
       guideGo: 'Let’s go',
       feelsLabel: 'What are you dealing with?',
       feelsSub: 'For each topic you will find what the body is doing and which nutrients help with it.',
@@ -4143,7 +4208,7 @@
 
     el.quiz.innerHTML =
       '<div class="quiz-top">' +
-        (state.step > 0 ? '<button type="button" class="btn-text" id="q-back">' + svg('back') + t().back + '</button>' : '<span></span>') +
+        '<button type="button" class="btn-text" id="q-back">' + svg('back') + t().back + '</button>' +
         '<span class="quiz-step">' + t().step + ' ' + (state.step + 1) + ' / ' + QUESTIONS.length + '</span>' +
       '</div>' +
       '<div class="bar"><i style="width:' + Math.max(pct, 6) + '%"></i></div>' +
@@ -4158,7 +4223,10 @@
       '</div>';
 
     const backBtn = el.quiz.querySelector('#q-back');
-    if (backBtn) backBtn.addEventListener('click', () => { state.step--; renderQuiz(); });
+    if (backBtn) backBtn.addEventListener('click', () => {
+      if (state.step > 0) { state.step--; renderQuiz(); }
+      else goBack();
+    });
 
     const opts = el.quiz.querySelector('#opts');
     q.options.forEach((opt, idx) => {
