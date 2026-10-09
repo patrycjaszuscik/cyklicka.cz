@@ -395,7 +395,7 @@
   /* ── guide invitation ── */
   .guide-card {
     width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px;
-    padding: 34px 28px 30px; border-radius: var(--r-xl); margin: 34px 0 52px;
+    padding: 36px 32px 32px; border-radius: var(--r-xl); margin: 34px auto 52px; max-width: 720px;
     background: linear-gradient(155deg, var(--dark), color-mix(in srgb, var(--accent) 34%, var(--dark)));
     border: 1px solid var(--dark); box-shadow: var(--shadow-m); color: #fff;
     transition: transform .3s var(--ease), box-shadow .3s var(--ease);
@@ -720,8 +720,10 @@
     color: color-mix(in srgb, var(--c) 58%, var(--ink)); font-weight: 700; }
   .world-peek .peek:hover { background: color-mix(in srgb, var(--c) 22%, var(--surface)); padding-left: 16px; }
   .world-peek .peek-dot { width: 20px; height: 20px; }
-  /* equal cards whether their list is open or shut */
-  .worlds { align-items: start; }
+  /* every card in a row matches the tallest, open or shut */
+  .worlds { align-items: stretch; }
+  .world { justify-content: flex-start; }
+  .world .world-copy { flex: 1 1 auto; }
   @media (max-width: 720px) {
     .concerns.clipped .concern:nth-child(n+7) { display: none; }
     .concerns-more { display: inline-flex; align-items: center; justify-content: center; gap: 7px;
@@ -2564,19 +2566,23 @@
       cs: { n: '1 %', t: 'kostní hmoty ubyde každý rok po menopauze' }, en: { n: '1%', t: 'of bone is lost every year after menopause' } }
   ];
 
+  /* Ordered by how a woman actually arrives: the cycle and hormones first,
+     then how she feels day to day, then how she looks and digests, then the
+     structural and preventive things. The most specialised entry sits last,
+     so the six shown by default on a phone are the six most common reasons. */
   const CONCERNS = [
     { topic: 'cycle', c: 'var(--d1)', art: 'pms', cs: 'PMS a bolestivá menstruace', en: 'PMS and painful periods' },
     { topic: 'hormonal', c: 'var(--d1)', art: 'flashes', cs: 'Návaly horka a noční pocení', en: 'Hot flashes and night sweats' },
     { topic: 'pregnancy', c: 'var(--d1)', art: 'pregnancy', cs: 'Těhotenství a kojení', en: 'Pregnancy and nursing' },
     { topic: 'energy', c: 'var(--d2)', art: 'tired', cs: 'Únava, která nepřechází', en: 'Fatigue that will not lift' },
-    { topic: 'mito', c: 'var(--d2)', art: 'energy', cs: 'Buněčná energie a mitochondrie', en: 'Cell energy and mitochondria' },
+    { topic: 'sleep', c: 'var(--d4)', art: 'insomnia', cs: 'Problémy se spánkem', en: 'Trouble sleeping' },
+    { topic: 'stress', c: 'var(--d4)', art: 'overwhelm', cs: 'Stres a napětí', en: 'Stress and tension' },
     { topic: 'skin', c: 'var(--d3)', art: 'mirror', cs: 'Pleť, vlasy a nehty', en: 'Skin, hair and nails' },
     { topic: 'gut', c: 'var(--d3)', art: 'gut', cs: 'Trávení a nadýmání', en: 'Digestion and bloating' },
     { topic: 'bone', c: 'var(--d3)', art: 'joint', cs: 'Kosti a klouby', en: 'Bones and joints' },
-    { topic: 'sleep', c: 'var(--d4)', art: 'insomnia', cs: 'Problémy se spánkem', en: 'Trouble sleeping' },
-    { topic: 'stress', c: 'var(--d4)', art: 'overwhelm', cs: 'Stres a napětí', en: 'Stress and tension' },
     { topic: 'strength', c: 'var(--d5)', art: 'muscle', cs: 'Síla a svalová hmota', en: 'Strength and muscle' },
-    { topic: 'immunity', c: 'var(--d6)', art: 'immunity', cs: 'Častá nachlazení', en: 'Catching everything going around' }
+    { topic: 'immunity', c: 'var(--d6)', art: 'immunity', cs: 'Častá nachlazení', en: 'Catching everything going around' },
+    { topic: 'mito', c: 'var(--d2)', art: 'energy', cs: 'Buněčná energie a mitochondrie', en: 'Cell energy and mitochondria' }
   ];
 
   /* ═══ state ═══ */
@@ -3834,7 +3840,7 @@
       core: [t().tierCore, t().tierCoreSub], support: [t().tierSupport, t().tierSupportSub],
       herb: [t().tierHerb, t().tierHerbSub], adapto: [t().tierAdapto, t().tierAdaptoSub]
     };
-    [['core', 'core'], ['support', 'grid'], ['herb', 'rows'], ['adapto', 'rows']].forEach(p => {
+    [['core', 'core'], ['support', 'grid'], ['herb', 'grid'], ['adapto', 'grid']].forEach(p => {
       const block = tierBlock(L[p[0]][0], L[p[0]][1], list.filter(i => i.tier === p[0]), p[1]);
       if (block) container.appendChild(block);
     });
