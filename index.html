@@ -708,18 +708,26 @@
   /* ── show less at once, without hiding anything for good ── */
   .concerns-more { display: none; }
   /* the topic list is folded at every width; the card stays a card */
-  .world-peek { display: none; gap: 7px; padding: 2px 16px 16px; }
+  .world-peek { display: none; gap: 0; padding: 2px 14px 14px; }
   .world.peek-open .world-peek { display: flex; }
   .peek-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%;
     padding: 14px 20px; font-size: 0.84rem; font-weight: 700; color: var(--c);
     border-top: none; background: none; }
   .peek-toggle:hover { background: color-mix(in srgb, var(--c) 8%, transparent); }
-  .world-peek .peek { border-top: none; border-radius: 12px; padding: 11px 14px;
-    background: color-mix(in srgb, var(--c) 12%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
-    color: color-mix(in srgb, var(--c) 58%, var(--ink)); font-weight: 700; }
-  .world-peek .peek:hover { background: color-mix(in srgb, var(--c) 22%, var(--surface)); padding-left: 16px; }
-  .world-peek .peek-dot { width: 20px; height: 20px; }
+  .world-peek .peek { border-top: none; border-radius: 10px; padding: 10px 12px;
+    background: transparent; border: 1px solid transparent;
+    color: var(--ink); font-weight: 600; font-size: 0.92rem;
+    transition: background .18s var(--ease), border-color .18s var(--ease), padding-left .18s var(--ease); }
+  .world-peek .peek + .peek { margin-top: -1px; }
+  .world-peek .peek:hover { background: color-mix(in srgb, var(--c) 14%, var(--surface));
+    border-color: color-mix(in srgb, var(--c) 30%, transparent);
+    color: color-mix(in srgb, var(--c) 55%, var(--ink)); padding-left: 16px; }
+  .world-peek .peek-dot { width: 15px; height: 15px; }
+  /* a hairline between rows instead of twelve filled blocks */
+  .world-peek .peek:not(:last-child)::after { content: ''; position: absolute; left: 12px; right: 12px;
+    bottom: -1px; height: 1px; background: var(--border); }
+  .world-peek .peek { position: relative; }
+  .world-peek .peek:hover::after { opacity: 0; }
   /* every card in a row matches the tallest, open or shut */
   .worlds { align-items: stretch; }
   .world { justify-content: flex-start; }
