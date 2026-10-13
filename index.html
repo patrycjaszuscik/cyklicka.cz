@@ -529,7 +529,11 @@
   .tier { margin-top: 34px; }
   .tier:first-child { margin-top: 18px; }
   .tier-head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; margin-bottom: 18px; }
-  .tier-head h3 { font-family: var(--font-ui); font-weight: 600; font-size: 1.36rem; letter-spacing: -.025em; }
+  .tier-head h3 { font-family: var(--font-ui); font-weight: 700; font-size: 1.42rem; letter-spacing: -.025em;
+    display: inline-block; padding: 7px 20px; border-radius: 999px;
+    color: color-mix(in srgb, var(--tc, var(--accent)) 72%, var(--ink));
+    background: color-mix(in srgb, var(--tc, var(--accent)) 13%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--tc, var(--accent)) 26%, transparent); }
   .tier-head span { font-size: 0.88rem; color: var(--ink-soft); }
   .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
   .grid > * { flex: 0 1 284px; }
@@ -758,6 +762,15 @@
     .world-name { font-size: 1.34rem; }
   }
 
+  /* once she has scrolled into the results, a way back to the box */
+  .to-search { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 180%); z-index: 55;
+    display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px 12px 18px; border-radius: 999px;
+    font-size: 0.86rem; font-weight: 700; color: #fff; background: var(--dark);
+    box-shadow: 0 10px 30px rgba(40,10,25,.32); transition: transform .35s var(--ease); }
+  .to-search[data-in="true"] { transform: translate(-50%, 0); }
+  .to-search::before { content: ''; width: 8px; height: 8px; border-left: 2px solid currentColor;
+    border-top: 2px solid currentColor; transform: rotate(45deg); margin-top: 2px; }
+
   /* ── consent ── */
   .consent { position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 140%); z-index: 90;
     width: min(620px, calc(100% - 32px)); display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
@@ -839,6 +852,8 @@
   .note-box strong { color: var(--gold); }
   .note-box .icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--gold); margin-top: 2px; }
   .note-box p { margin: 0; font-size: 0.86rem; color: var(--ink-soft); }
+  .note-lines { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+  .note-lines strong { font-size: 0.78rem; letter-spacing: .08em; text-transform: uppercase; }
   .meta-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); display: block; margin-bottom: 9px; }
 
   .forms { text-align: left; }
@@ -1096,6 +1111,8 @@
     <p id="disclaimer-text"></p>
   </div>
 </section>
+
+<button type="button" class="to-search" id="to-search" hidden></button>
 
 <div class="scrim" id="scrim" data-open="false">
   <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div>
@@ -2389,6 +2406,7 @@
       sourcesStudies: 'Klinické studie a přehledy',
       sourcesPeople: 'Odborníci, na které odkazujeme',
       sourcesBooks: 'Knižní zdroje',
+      backToSearch: 'Zpět na hledání',
       cycleDay: 'Den',
       cycleTap: 'Klepněte na kterýkoli den — ukážeme, co se v tu dobu v těle děje.',
       dose: 'Dávkování',
@@ -2505,6 +2523,7 @@
       sourcesStudies: 'Clinical trials and reviews',
       sourcesPeople: 'People we cite',
       sourcesBooks: 'Books',
+      backToSearch: 'Back to search',
       cycleDay: 'Day',
       cycleTap: 'Tap any day — we will show what the body is doing at that point.',
       dose: 'Dosing',
@@ -2583,15 +2602,15 @@
     { topic: 'cycle', c: 'var(--d1)', art: 'pms', cs: 'PMS a bolestivá menstruace', en: 'PMS and painful periods' },
     { topic: 'hormonal', c: 'var(--d1)', art: 'flashes', cs: 'Návaly horka a noční pocení', en: 'Hot flashes and night sweats' },
     { topic: 'pregnancy', c: 'var(--d1)', art: 'pregnancy', cs: 'Těhotenství a kojení', en: 'Pregnancy and nursing' },
-    { topic: 'energy', c: 'var(--d4)', art: 'tired', cs: 'Únava, která nepřechází', en: 'Fatigue that will not lift' },
-    { topic: 'sleep', c: 'var(--d4)', art: 'insomnia', cs: 'Problémy se spánkem', en: 'Trouble sleeping' },
-    { topic: 'stress', c: 'var(--d4)', art: 'overwhelm', cs: 'Stres a napětí', en: 'Stress and tension' },
-    { topic: 'skin', c: 'var(--d3)', art: 'mirror', cs: 'Pleť, vlasy a nehty', en: 'Skin, hair and nails' },
-    { topic: 'gut', c: 'var(--d3)', art: 'gut', cs: 'Trávení a nadýmání', en: 'Digestion and bloating' },
-    { topic: 'bone', c: 'var(--d3)', art: 'joint', cs: 'Kosti a klouby', en: 'Bones and joints' },
-    { topic: 'strength', c: 'var(--d5)', art: 'muscle', cs: 'Síla a svalová hmota', en: 'Strength and muscle' },
-    { topic: 'immunity', c: 'var(--d5)', art: 'immunity', cs: 'Častá nachlazení', en: 'Catching everything going around' },
-    { topic: 'mito', c: 'var(--d5)', art: 'energy', cs: 'Buněčná energie a mitochondrie', en: 'Cell energy and mitochondria' }
+    { topic: 'energy', c: 'var(--violet)', art: 'tired', cs: 'Únava, která nepřechází', en: 'Fatigue that will not lift' },
+    { topic: 'sleep', c: 'var(--violet)', art: 'insomnia', cs: 'Problémy se spánkem', en: 'Trouble sleeping' },
+    { topic: 'stress', c: 'var(--violet)', art: 'overwhelm', cs: 'Stres a napětí', en: 'Stress and tension' },
+    { topic: 'skin', c: 'var(--gold)', art: 'mirror', cs: 'Pleť, vlasy a nehty', en: 'Skin, hair and nails' },
+    { topic: 'gut', c: 'var(--gold)', art: 'gut', cs: 'Trávení a nadýmání', en: 'Digestion and bloating' },
+    { topic: 'bone', c: 'var(--gold)', art: 'joint', cs: 'Kosti a klouby', en: 'Bones and joints' },
+    { topic: 'strength', c: 'var(--teal)', art: 'muscle', cs: 'Síla a svalová hmota', en: 'Strength and muscle' },
+    { topic: 'immunity', c: 'var(--teal)', art: 'immunity', cs: 'Častá nachlazení', en: 'Catching everything going around' },
+    { topic: 'mito', c: 'var(--teal)', art: 'energy', cs: 'Buněčná energie a mitochondrie', en: 'Cell energy and mitochondria' }
   ];
 
   /* ═══ state ═══ */
@@ -2600,7 +2619,7 @@
    'guide-cta','stats-band','feels-panel','feels-label','feels-sub','worlds-sub','concerns','worlds-label','worlds','view-home','view-quiz','view-plan','view-world',
    'view-cycle','view-results','quiz','plan-back','plan-title','plan-answers','plan-note','plan-results','plan-actions',
    'world-back','world-title','world-note','topics','showall','cycle-back','cycle-head','cycle-ring','cycle-len','cycle-phases','cycle-body',
-   'results-back','results-title','results-body','disclaimer-text','scrim','sheet','sources','sources-title','sources-body'].forEach(id => {
+   'results-back','results-title','results-body','disclaimer-text','to-search','scrim','sheet','sources','sources-title','sources-body'].forEach(id => {
     el[id.replace(/-(\w)/g, (m, c) => c.toUpperCase())] = document.getElementById(id);
   });
 
@@ -2622,7 +2641,7 @@
     if (!keepTrail) trail.push(snapshot());
     Object.assign(state, next);
     render();
-    syncHash();
+    syncHash(true);
     window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   }
 
@@ -2652,13 +2671,16 @@
   }
 
   let syncingHash = false;
-  function syncHash() {
+  /* push for a real navigation so the browser Back button walks the site;
+     replace while typing, or every keystroke would become a history entry */
+  function syncHash(push) {
     const base = routeFor(state);
     const want = '#' + (base === '/' && openItemId ? '' : base) +
       (openItemId ? '/' + ROUTE[lang].item + '/' + openItemId : '');
     if (location.hash !== want) {
       syncingHash = true;
-      history.replaceState(null, '', want);
+      if (push) history.pushState(null, '', want);
+      else history.replaceState(null, '', want);
       syncingHash = false;
     }
   }
@@ -2692,7 +2714,15 @@
     return false;
   }
 
-  window.addEventListener('hashchange', function () { if (!syncingHash) applyHash(); });
+  window.addEventListener('hashchange', function () {
+    if (syncingHash) return;
+    const raw = decodeURIComponent(location.hash.replace(/^#/, ''));
+    const r = ROUTE[lang], alt = ROUTE[lang === 'cs' ? 'en' : 'cs'];
+    const namesItem = raw.indexOf('/' + r.item + '/') >= 0 || raw.indexOf('/' + alt.item + '/') >= 0 ||
+      raw.indexOf(r.item + '/') === 0 || raw.indexOf(alt.item + '/') === 0;
+    if (!namesItem && el.scrim.dataset.open === 'true') closeSheet(true);
+    applyHash();
+  });
 
   function goBack() {
     const prev = trail.pop();
@@ -3820,6 +3850,7 @@
     if (!items.length) return null;
     const box = document.createElement('div');
     box.className = 'tier';
+    box.style.setProperty('--tc', itemColor(items[0]));
     const head = document.createElement('div');
     head.className = 'tier-head';
     head.innerHTML = '<h3>' + title + '</h3><span>' + sub + '</span>';
@@ -3969,6 +4000,8 @@
     el.savedBtn.setAttribute('aria-label', t().savedLabel);
     el.savedBtn.setAttribute('aria-pressed', String(state.savedOnly));
     el.disclaimerText.textContent = t().disclaimer;
+    el.toSearch.textContent = t().backToSearch;
+    if (typeof updateToSearch === 'function') updateToSearch();
     renderSources();
 
     el.viewHome.hidden = state.view !== 'home';
@@ -4659,7 +4692,7 @@
   function openSheet(item) {
     lastFocus = document.activeElement;
     openItemId = item.id;
-    syncHash();
+    syncHash(true);
     const color = itemColor(item);
     const tags = item.topics.map(tid =>
       '<button type="button" class="tag" data-topic="' + tid + '">' +
@@ -4689,7 +4722,10 @@
             '" style="--pc:' + p.color + '" aria-selected="' + (i === 0) + '">' + svg(p.icon) +
             '<span>' + t()[p.label] + '</span></button>').join('') +
         '</div><div class="persp-body" id="persp-body"></div></details>' +
-      '<div class="note-box">' + svg('info') + '<p><strong>' + t().caution + ':</strong> ' + item[lang].note + '</p></div>' +
+      '<div class="note-box">' + svg('info') + '<div class="note-lines">' +
+        '<strong>' + t().caution + '</strong>' +
+        sentences(item[lang].note).map(function (x) { return '<p>' + x + '</p>'; }).join('') +
+      '</div></div>' +
       formsBlock(item) + buyBlock(item) +
       '<button type="button" class="sheet-save" aria-pressed="' + isSaved + '">' + svg('bookmark') +
         '<span>' + (isSaved ? t().saved : t().save) + '</span></button>';
@@ -4738,9 +4774,9 @@
   }
 
   let sheetWipe = null;
-  function closeSheet() {
+  function closeSheet(silent) {
     openItemId = null;
-    syncHash();
+    if (!silent) syncHash();
     el.scrim.dataset.open = 'false';
     document.body.style.overflow = '';
     if (lastFocus && lastFocus.focus) lastFocus.focus();
@@ -4748,6 +4784,18 @@
     sheetWipe = setTimeout(function () {
       if (!openItemId) el.sheet.innerHTML = '';
     }, 350);
+  }
+
+  /* a search that has scrolled off the top needs a way back to itself */
+  el.toSearch.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    setTimeout(function () { el.heroSearch.focus({ preventScroll: true }); }, reduceMotion ? 0 : 420);
+  });
+  /* while a search is open, the way back to the box is always on screen */
+  function updateToSearch() {
+    const show = state.view === 'home' && !!state.query;
+    el.toSearch.hidden = !show;
+    el.toSearch.dataset.in = show ? 'true' : 'false';
   }
 
   el.scrim.addEventListener('click', (e) => { if (e.target === el.scrim) closeSheet(); });
