@@ -771,6 +771,22 @@
   .to-search::before { content: ''; width: 8px; height: 8px; border-left: 2px solid currentColor;
     border-top: 2px solid currentColor; transform: rotate(45deg); margin-top: 2px; }
 
+  /* ── food sources ── */
+  .food-intro { margin: 0 0 14px; font-size: 0.82rem; line-height: 1.55; color: var(--ink-soft); text-align: center; }
+  .food-list { display: flex; flex-direction: column; gap: 10px; }
+  .food-row { display: grid; grid-template-columns: 1fr 1.1fr auto auto; align-items: center; gap: 10px; }
+  .food-name { font-size: 0.88rem; font-weight: 600; text-align: left; }
+  .food-bar { height: 9px; border-radius: 999px; background: color-mix(in srgb, var(--c) 12%, var(--surface-2)); overflow: hidden; }
+  .food-bar i { display: block; height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, var(--surface)), var(--c)); }
+  .food-val { font-size: 0.78rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .food-pct { font-size: 0.8rem; font-weight: 700; color: var(--c); font-variant-numeric: tabular-nums;
+    min-width: 4.5ch; text-align: right; }
+  @media (max-width: 520px) {
+    .food-row { grid-template-columns: 1fr auto auto; }
+    .food-bar { grid-column: 1 / -1; order: 3; }
+  }
+
   /* ── consent ── */
   .consent { position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 140%); z-index: 90;
     width: min(620px, calc(100% - 32px)); display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
@@ -2406,6 +2422,8 @@
       sourcesStudies: 'Klinické studie a přehledy',
       sourcesPeople: 'Odborníci, na které odkazujeme',
       sourcesBooks: 'Knižní zdroje',
+      foodLabel: 'Kde to najdeš v jídle',
+      foodIntro: 'Na 100 g potraviny. Pruh ukazuje, jakou část denní potřeby ({n}) to pokryje.',
       backToSearch: 'Zpět na hledání',
       cycleDay: 'Den',
       cycleTap: 'Klepněte na kterýkoli den — ukážeme, co se v tu dobu v těle děje.',
@@ -2523,6 +2541,8 @@
       sourcesStudies: 'Clinical trials and reviews',
       sourcesPeople: 'People we cite',
       sourcesBooks: 'Books',
+      foodLabel: 'Where to find it in food',
+      foodIntro: 'Per 100 g of food. The bar shows how much of a day’s need ({n}) that covers.',
       backToSearch: 'Back to search',
       cycleDay: 'Day',
       cycleTap: 'Tap any day — we will show what the body is doing at that point.',
@@ -3710,6 +3730,75 @@
       third + '</span>';
   }
 
+
+  /* Where a nutrient actually turns up on a plate. Values are typical USDA
+     reference figures per 100 g — food varies with soil, season and cooking,
+     so these show the order of magnitude, not a lab result for your dinner.
+     `need` is the daily reference intake for an adult woman. */
+  const FOOD = {
+    magnesium: { u: 'mg', need: 300, cs: [['Dýňová semínka', 550], ['Mák', 347], ['Mandle', 270], ['Hořká čokoláda 70 %', 228], ['Vařený špenát', 87]],
+      en: [['Pumpkin seeds', 550], ['Poppy seeds', 347], ['Almonds', 270], ['Dark chocolate 70%', 228], ['Cooked spinach', 87]] },
+    iron: { u: 'mg', need: 16, cs: [['Vepřová játra', 18], ['Dýňová semínka', 8.8], ['Vařená čočka', 3.3], ['Vařený špenát', 3.6], ['Hovězí maso', 2.6]],
+      en: [['Pork liver', 18], ['Pumpkin seeds', 8.8], ['Cooked lentils', 3.3], ['Cooked spinach', 3.6], ['Beef', 2.6]] },
+    calcium: { u: 'mg', need: 950, cs: [['Mák', 1440], ['Parmazán', 1180], ['Sardinky s kostmi', 380], ['Tofu srážené vápníkem', 350], ['Mandle', 269]],
+      en: [['Poppy seeds', 1440], ['Parmesan', 1180], ['Sardines with bones', 380], ['Calcium-set tofu', 350], ['Almonds', 269]] },
+    'vitamin-c': { u: 'mg', need: 95, cs: [['Šípky', 426], ['Černý rybíz', 181], ['Petrželová nať', 133], ['Červená paprika', 128], ['Kiwi', 93]],
+      en: [['Rosehips', 426], ['Blackcurrants', 181], ['Parsley', 133], ['Red pepper', 128], ['Kiwi', 93]] },
+    'vitamin-d3': { u: 'µg', need: 15, cs: [['Olej z tresčích jater', 250], ['Sleď', 19], ['Makrela', 13], ['Losos', 11], ['Žloutek', 5]],
+      en: [['Cod liver oil', 250], ['Herring', 19], ['Mackerel', 13], ['Salmon', 11], ['Egg yolk', 5]] },
+    zinc: { u: 'mg', need: 10, cs: [['Ústřice', 45], ['Dýňová semínka', 7.8], ['Hovězí maso', 6], ['Tvrdý sýr', 4], ['Vařená čočka', 1.3]],
+      en: [['Oysters', 45], ['Pumpkin seeds', 7.8], ['Beef', 6], ['Hard cheese', 4], ['Cooked lentils', 1.3]] },
+    b12: { u: 'µg', need: 4, cs: [['Hovězí játra', 70], ['Makrela', 19], ['Hovězí maso', 2.6], ['Tvrdý sýr', 1.5], ['Vejce', 1.1]],
+      en: [['Beef liver', 70], ['Mackerel', 19], ['Beef', 2.6], ['Hard cheese', 1.5], ['Egg', 1.1]] },
+    folate: { u: 'µg', need: 330, cs: [['Hovězí játra', 290], ['Syrový špenát', 194], ['Vařená čočka', 181], ['Cizrna', 172], ['Chřest', 149]],
+      en: [['Beef liver', 290], ['Raw spinach', 194], ['Cooked lentils', 181], ['Chickpeas', 172], ['Asparagus', 149]] },
+    'omega-3': { u: 'mg', need: 250, cs: [['Makrela', 2600], ['Losos', 2300], ['Sleď', 2000], ['Sardinky', 1500]],
+      en: [['Mackerel', 2600], ['Salmon', 2300], ['Herring', 2000], ['Sardines', 1500]] },
+    iodine: { u: 'µg', need: 150, cs: [['Treska', 110], ['Vejce', 24], ['Mléko', 15], ['Jodidovaná sůl (1 g)', 20]],
+      en: [['Cod', 110], ['Egg', 24], ['Milk', 15], ['Iodised salt (1 g)', 20]] },
+    selenium: { u: 'µg', need: 70, cs: [['Para ořechy', 1900], ['Tuňák', 90], ['Sardinky', 50], ['Vejce', 30]],
+      en: [['Brazil nuts', 1900], ['Tuna', 90], ['Sardines', 50], ['Egg', 30]] },
+    'vitamin-a': { u: 'µg', need: 650, cs: [['Hovězí játra', 6500], ['Mrkev', 835], ['Batáty', 709], ['Špenát', 469]],
+      en: [['Beef liver', 6500], ['Carrot', 835], ['Sweet potato', 709], ['Spinach', 469]] },
+    k2: { u: 'µg', need: 70, cs: [['Nattó', 1100], ['Husí játra', 369], ['Tvrdé sýry', 75], ['Žloutek', 32]],
+      en: [['Natto', 1100], ['Goose liver', 369], ['Hard cheeses', 75], ['Egg yolk', 32]] },
+    b6: { u: 'mg', need: 1.6, cs: [['Pistácie', 1.7], ['Tuňák', 1], ['Kuřecí maso', 0.5], ['Banán', 0.37], ['Brambory', 0.3]],
+      en: [['Pistachios', 1.7], ['Tuna', 1], ['Chicken', 0.5], ['Banana', 0.37], ['Potato', 0.3]] },
+    protein: { u: 'g', need: 50, cs: [['Kuřecí prsa', 31], ['Tvrdý sýr', 25], ['Vejce', 13], ['Tvaroh', 12], ['Vařená čočka', 9]],
+      en: [['Chicken breast', 31], ['Hard cheese', 25], ['Egg', 13], ['Quark', 12], ['Cooked lentils', 9]] },
+    choline: { u: 'mg', need: 400, cs: [['Žloutek', 680], ['Hovězí játra', 420], ['Celé vejce', 250], ['Sója', 116]],
+      en: [['Egg yolk', 680], ['Beef liver', 420], ['Whole egg', 250], ['Soy', 116]] },
+    biotin: { u: 'µg', need: 40, cs: [['Hovězí játra', 27], ['Žloutek', 25], ['Vejce', 10], ['Mandle', 5]],
+      en: [['Beef liver', 27], ['Egg yolk', 25], ['Egg', 10], ['Almonds', 5]] },
+    coq10: { u: 'mg', need: 10, cs: [['Hovězí srdce', 11], ['Sardinky', 6], ['Hovězí maso', 3], ['Arašídy', 2.7]],
+      en: [['Beef heart', 11], ['Sardines', 6], ['Beef', 3], ['Peanuts', 2.7]] },
+    creatine: { u: 'g', need: 2, cs: [['Sleď', 0.9], ['Vepřové maso', 0.5], ['Hovězí maso', 0.45], ['Losos', 0.45]],
+      en: [['Herring', 0.9], ['Pork', 0.5], ['Beef', 0.45], ['Salmon', 0.45]] },
+    electrolytes: { u: 'mg', need: 3500, cs: [['Sušené meruňky', 1160], ['Fazole', 1400], ['Brambory', 535], ['Banán', 358]],
+      en: [['Dried apricots', 1160], ['Beans', 1400], ['Potato', 535], ['Banana', 358]] },
+    taurine: { u: 'mg', need: 400, cs: [['Mušle', 655], ['Tuňák', 280], ['Krůtí maso', 300], ['Hovězí maso', 43]],
+      en: [['Clams', 655], ['Tuna', 280], ['Turkey', 300], ['Beef', 43]] },
+    glycine: { u: 'g', need: 3, cs: [['Želatina', 21], ['Vepřová kůže', 11], ['Kostní vývar', 1.5], ['Hovězí maso', 1.4]],
+      en: [['Gelatin', 21], ['Pork skin', 11], ['Bone broth', 1.5], ['Beef', 1.4]] }
+  };
+
+  function foodBlock(item) {
+    const f = FOOD[item.id];
+    if (!f) return '';
+    const rows = f[lang].map(function (x) {
+      const pct = Math.round(x[1] / f.need * 100);
+      const w = Math.max(4, Math.min(100, pct));
+      return '<div class="food-row">' +
+        '<span class="food-name">' + x[0] + '</span>' +
+        '<span class="food-bar"><i style="width:' + w + '%"></i></span>' +
+        '<span class="food-val">' + x[1] + ' ' + f.u + '</span>' +
+        '<span class="food-pct">' + pct + ' %</span></div>';
+    }).join('');
+    return '<details class="sheet-sec food"><summary class="sec-head">' + t().foodLabel + '</summary>' +
+      '<p class="food-intro">' + t().foodIntro.replace('{n}', f.need + ' ' + f.u) + '</p>' +
+      '<div class="food-list">' + rows + '</div></details>';
+  }
+
   function formsBlock(item) {
     const f = FORMS[item.id];
     if (!f) return '';
@@ -4726,7 +4815,7 @@
         '<strong>' + t().caution + '</strong>' +
         sentences(item[lang].note).map(function (x) { return '<p>' + x + '</p>'; }).join('') +
       '</div></div>' +
-      formsBlock(item) + buyBlock(item) +
+      foodBlock(item) + formsBlock(item) + buyBlock(item) +
       '<button type="button" class="sheet-save" aria-pressed="' + isSaved + '">' + svg('bookmark') +
         '<span>' + (isSaved ? t().saved : t().save) + '</span></button>';
 
