@@ -389,8 +389,14 @@
   .hero-search input::placeholder { color: var(--ink-dim); }
   body[data-view="home"] .topbar .search-shell { display: none; }
   .hero-rule { height: 1px; background: var(--border); margin: 42px 0 0; }
-  .section-label { display: block; text-align: center; font-family: var(--font-ui); font-weight: 600; font-size: clamp(1.6rem, 3.4vw, 2.15rem); line-height: 1.18; letter-spacing: -.025em; text-transform: none; color: var(--ink); margin-bottom: 0; }
-  .section-sub { display: block; text-align: center; margin: 12px auto 30px; max-width: 54ch; font-size: 1rem; line-height: 1.6; color: var(--ink-soft); }
+  .section-label { display: flex; align-items: center; justify-content: center; gap: 18px;
+    text-align: center; font-family: var(--font-display); font-style: italic; font-weight: 500;
+    font-size: clamp(1.7rem, 3.6vw, 2.3rem); line-height: 1.18; letter-spacing: 0;
+    text-transform: none; color: var(--ink); margin-bottom: 0; }
+  .section-label::before, .section-label::after { content: ''; height: 1px; width: 40px; flex-shrink: 0;
+    background: var(--border-lift); }
+  @media (max-width: 520px) { .section-label::before, .section-label::after { width: 20px; } }
+  .section-sub { display: block; text-align: center; margin: 14px auto 38px; max-width: 54ch; font-size: 1rem; line-height: 1.6; color: var(--ink-soft); }
 
   /* ── guide invitation ── */
   .guide-card {
@@ -414,8 +420,13 @@
 
   /* ── "do you recognise yourself" panel ── */
   .feels { margin: 0 0 56px; }
-  .feels-head { text-align: center; font-family: var(--font-ui); font-style: normal; font-weight: 600; font-size: clamp(1.6rem, 3.4vw, 2.15rem); line-height: 1.18; letter-spacing: -.025em; }
-  .feels-sub { margin: 12px auto 30px; text-align: center; color: var(--ink-soft); font-size: 1rem; line-height: 1.6; max-width: 54ch; }
+  .feels-head { display: flex; align-items: center; justify-content: center; gap: 18px;
+    text-align: center; font-family: var(--font-display); font-style: italic; font-weight: 500;
+    font-size: clamp(1.7rem, 3.6vw, 2.3rem); line-height: 1.18; letter-spacing: 0; }
+  .feels-head::before, .feels-head::after { content: ''; height: 1px; width: 40px; flex-shrink: 0;
+    background: var(--border-lift); }
+  @media (max-width: 520px) { .feels-head::before, .feels-head::after { width: 20px; } }
+  .feels-sub { margin: 14px auto 38px; text-align: center; color: var(--ink-soft); font-size: 1rem; line-height: 1.6; max-width: 54ch; }
   .concerns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   @media (max-width: 1000px) { .concerns { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 680px) { .concerns { grid-template-columns: 1fr; } }
@@ -526,19 +537,32 @@
 
   /* ── results ── */
   .results { padding: 20px 0 10px; }
-  .tier { margin-top: 34px; }
+  .tier { margin-top: 52px; }
   .tier:first-child { margin-top: 18px; }
-  .tier-head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; margin-bottom: 18px; }
-  .tier-head h3 { font-family: var(--font-ui); font-weight: 700; font-size: 1.42rem; letter-spacing: -.025em;
-    display: inline-block; padding: 7px 20px; border-radius: 999px;
-    color: color-mix(in srgb, var(--tc, var(--accent)) 72%, var(--ink));
-    background: color-mix(in srgb, var(--tc, var(--accent)) 13%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--tc, var(--accent)) 26%, transparent); }
+  .tier-head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; margin-bottom: 34px; }
+  .tier-head h3 { font-family: var(--font-display); font-style: italic; font-weight: 500;
+    font-size: clamp(1.55rem, 3.6vw, 2rem); line-height: 1.15; letter-spacing: 0;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    color: color-mix(in srgb, var(--tc, var(--accent)) 76%, var(--ink)); }
+  .tier-head h3::before, .tier-head h3::after { content: ''; height: 1px; width: 34px; flex-shrink: 0;
+    background: color-mix(in srgb, var(--tc, var(--accent)) 46%, transparent); }
+  .tier-head span { font-size: 0.88rem; color: var(--ink-soft); max-width: 46ch; }
+  @media (max-width: 520px) { .tier-head h3::before, .tier-head h3::after { width: 18px; } }
   .tier-head span { font-size: 0.88rem; color: var(--ink-soft); }
   .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
   .grid > * { flex: 0 1 284px; }
   .grid.tight > * { flex: 0 1 268px; }
-  @media (max-width: 560px) { .grid > *, .grid.tight > * { flex: 0 1 100%; } }
+  @media (max-width: 560px) {
+    .grid { gap: 9px; }
+    .grid > *, .grid.tight > * { flex: 0 1 calc(50% - 5px); }
+    .card-open { padding: 16px 10px 16px; gap: 7px; }
+    .card-glyph { width: 38px; height: 38px; }
+    .card-name { font-size: 0.97rem; line-height: 1.18; }
+    .card-for { font-size: 0.75rem; line-height: 1.4; }
+    .card::after { right: 9px; bottom: 9px; }
+    .bookmark { top: 4px; right: 2px; width: 30px; height: 30px; }
+    .bookmark .icon { width: 15px; height: 15px; }
+  }
 
   .card { position: relative; border-radius: var(--r-lg); background: var(--surface); border: 1px solid color-mix(in srgb, var(--c) 18%, var(--border));
     box-shadow: 0 1px 2px rgba(30,10,20,.05), 0 8px 24px color-mix(in srgb, var(--c) 14%, transparent);
@@ -921,8 +945,17 @@
   .sheet-sec summary { cursor: pointer; list-style: none; }
   .sheet-sec summary::-webkit-details-marker { display: none; }
   details.sheet-sec { padding-bottom: 0; }
-  details.sheet-sec > summary.sec-head { margin: 0; padding: 17px 42px; border-bottom: none;
+  details.sheet-sec > summary.sec-head { margin: 0; padding: 16px 44px; border-bottom: none;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
     text-align: center; font-size: 1.02rem; }
+  details.sheet-sec > summary.sec-head .icon { width: 19px; height: 19px; flex-shrink: 0; opacity: .85; }
+  /* a colour and a mark per section, consistent on every supplement */
+  .s-helps { --c: var(--d2); }
+  .s-persp { --c: var(--violet); }
+  .s-food  { --c: var(--gold); }
+  .s-forms { --c: var(--d3); }
+  .s-buy   { --c: var(--teal); }
+  details.sheet-sec[open] > summary.sec-head { color: color-mix(in srgb, var(--c) 62%, var(--ink)); }
   details.sheet-sec > summary.sec-head::after { display: none; }
   details.sheet-sec[open] > summary.sec-head { margin: 0 18px 14px; padding: 17px 24px 13px;
     border-bottom: 1px solid var(--border); }
@@ -3416,7 +3449,7 @@
   function buyBlock(item) {
     const b = BUY[item.id];
     if (!b) return '';
-    return '<details class="sheet-sec buy"><summary class="sec-head">' + t().buyLabel + '</summary>' +
+    return '<details class="sheet-sec buy s-buy"><summary class="sec-head">' + svg('check') + '<span>' + t().buyLabel + '</span></summary>' +
       '<ul class="buy-list">' + b[lang].map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></details>';
   }
 
@@ -3794,7 +3827,7 @@
         '<span class="food-val">' + x[1] + ' ' + f.u + '</span>' +
         '<span class="food-pct">' + pct + ' %</span></div>';
     }).join('');
-    return '<details class="sheet-sec food"><summary class="sec-head">' + t().foodLabel + '</summary>' +
+    return '<details class="sheet-sec food s-food"><summary class="sec-head">' + svg('plate') + '<span>' + t().foodLabel + '</span></summary>' +
       '<p class="food-intro">' + t().foodIntro.replace('{n}', f.need + ' ' + f.u) + '</p>' +
       '<div class="food-list">' + rows + '</div></details>';
   }
@@ -3803,8 +3836,8 @@
     const f = FORMS[item.id];
     if (!f) return '';
     const d = f[lang];
-    return '<details class="sheet-sec forms">' +
-      '<summary class="sec-head">' + t().formsLabel + '</summary>' +
+    return '<details class="sheet-sec forms s-forms">' +
+      '<summary class="sec-head">' + svg('mortar') + '<span>' + t().formsLabel + '</span></summary>' +
       '<p class="forms-intro">' + d.intro + '</p>' +
       '<div class="form-list">' + d.list.map(function (x) {
         return '<div class="form-row"><div class="form-top"><b>' + x.n + '</b><span>' + x.f + '</span></div>' +
@@ -4801,21 +4834,24 @@
         '<div class="dose-note">' + item.d.v + ' ' + item.d.u + ' ' + t()[item.d.per] +
         (foodLine ? ' · ' + foodLine : '') + '</div></div>' +
       safetyBlock(item) +
-      '<details class="sheet-sec"><summary class="sec-head">' + t().helpsWith + '</summary><div class="tag-row">' + tags + '</div></details>' +
-      '<details class="sheet-sec" open><summary class="sec-head">' + t().whatLabel + '</summary>' +
+      /* the caution belongs with the dose, not stranded between two accordions */
+      '<div class="note-box">' + svg('info') + '<div class="note-lines">' +
+        '<strong>' + t().caution + '</strong>' +
+        sentences(item[lang].note).map(function (x) { return '<p>' + x + '</p>'; }).join('') +
+      '</div></div>' +
+      /* then: what it does → what it is for → where to get it → how to take it
+         → what to check in the shop → and the deeper reading last */
+      '<details class="sheet-sec s-what" open><summary class="sec-head">' + svg('flask') + '<span>' + t().whatLabel + '</span></summary>' +
         helpsRow(item, 'helps helps-lg') +
         whatList(item) + '</details>' +
-      '<details class="sheet-sec persp"><summary class="sec-head">' + t().perspectives + '</summary>' +
+      '<details class="sheet-sec s-helps"><summary class="sec-head">' + svg('compass') + '<span>' + t().helpsWith + '</span></summary><div class="tag-row">' + tags + '</div></details>' +
+      foodBlock(item) + formsBlock(item) + buyBlock(item) +
+      '<details class="sheet-sec persp s-persp"><summary class="sec-head">' + svg('trend') + '<span>' + t().perspectives + '</span></summary>' +
         '<div class="persp-tabs" role="tablist">' +
           PERSPECTIVES.map((p, i) => '<button type="button" class="persp-tab" role="tab" data-p="' + p.id +
             '" style="--pc:' + p.color + '" aria-selected="' + (i === 0) + '">' + svg(p.icon) +
             '<span>' + t()[p.label] + '</span></button>').join('') +
         '</div><div class="persp-body" id="persp-body"></div></details>' +
-      '<div class="note-box">' + svg('info') + '<div class="note-lines">' +
-        '<strong>' + t().caution + '</strong>' +
-        sentences(item[lang].note).map(function (x) { return '<p>' + x + '</p>'; }).join('') +
-      '</div></div>' +
-      foodBlock(item) + formsBlock(item) + buyBlock(item) +
       '<button type="button" class="sheet-save" aria-pressed="' + isSaved + '">' + svg('bookmark') +
         '<span>' + (isSaved ? t().saved : t().save) + '</span></button>';
 
