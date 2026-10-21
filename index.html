@@ -886,7 +886,6 @@
   .buy-list li { position: relative; padding-left: 26px; font-size: 0.9rem; line-height: 1.55; color: var(--ink); }
   .buy-list li::before { content: ''; position: absolute; left: 3px; top: 4px; width: 13px; height: 8px;
     border-left: 2px solid var(--moss); border-bottom: 2px solid var(--moss); transform: rotate(-45deg); }
-  .buy { background: color-mix(in srgb, var(--moss) 6%, var(--surface)); border-color: color-mix(in srgb, var(--moss) 24%, var(--border)); }
   .note-box { display: flex; gap: 10px; text-align: left; padding: 14px 16px; border-radius: var(--r-md); background: var(--surface-2);
     border: 1px solid var(--border-lift); margin-bottom: 18px; }
   .note-box strong { color: var(--gold); }
@@ -945,17 +944,9 @@
   .sheet-sec summary { cursor: pointer; list-style: none; }
   .sheet-sec summary::-webkit-details-marker { display: none; }
   details.sheet-sec { padding-bottom: 0; }
-  details.sheet-sec > summary.sec-head { margin: 0; padding: 16px 44px; border-bottom: none;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    text-align: center; font-size: 1.02rem; }
-  details.sheet-sec > summary.sec-head .icon { width: 19px; height: 19px; flex-shrink: 0; opacity: .85; }
-  /* a colour and a mark per section, consistent on every supplement */
-  .s-helps { --c: var(--d2); }
-  .s-persp { --c: var(--violet); }
-  .s-food  { --c: var(--gold); }
-  .s-forms { --c: var(--d3); }
-  .s-buy   { --c: var(--teal); }
-  details.sheet-sec[open] > summary.sec-head { color: color-mix(in srgb, var(--c) 62%, var(--ink)); }
+  details.sheet-sec > summary.sec-head { margin: 0; padding: 17px 44px; border-bottom: none;
+    display: block; text-align: center; font-size: 1.02rem;
+    color: color-mix(in srgb, var(--c) 46%, var(--ink)); }
   details.sheet-sec > summary.sec-head::after { display: none; }
   details.sheet-sec[open] > summary.sec-head { margin: 0 18px 14px; padding: 17px 24px 13px;
     border-bottom: 1px solid var(--border); }
@@ -3449,7 +3440,7 @@
   function buyBlock(item) {
     const b = BUY[item.id];
     if (!b) return '';
-    return '<details class="sheet-sec buy s-buy"><summary class="sec-head">' + svg('check') + '<span>' + t().buyLabel + '</span></summary>' +
+    return '<details class="sheet-sec buy"><summary class="sec-head">' + t().buyLabel + '</summary>' +
       '<ul class="buy-list">' + b[lang].map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></details>';
   }
 
@@ -3827,7 +3818,7 @@
         '<span class="food-val">' + x[1] + ' ' + f.u + '</span>' +
         '<span class="food-pct">' + pct + ' %</span></div>';
     }).join('');
-    return '<details class="sheet-sec food s-food"><summary class="sec-head">' + svg('plate') + '<span>' + t().foodLabel + '</span></summary>' +
+    return '<details class="sheet-sec food"><summary class="sec-head">' + t().foodLabel + '</summary>' +
       '<p class="food-intro">' + t().foodIntro.replace('{n}', f.need + ' ' + f.u) + '</p>' +
       '<div class="food-list">' + rows + '</div></details>';
   }
@@ -3836,8 +3827,8 @@
     const f = FORMS[item.id];
     if (!f) return '';
     const d = f[lang];
-    return '<details class="sheet-sec forms s-forms">' +
-      '<summary class="sec-head">' + svg('mortar') + '<span>' + t().formsLabel + '</span></summary>' +
+    return '<details class="sheet-sec forms">' +
+      '<summary class="sec-head">' + t().formsLabel + '</summary>' +
       '<p class="forms-intro">' + d.intro + '</p>' +
       '<div class="form-list">' + d.list.map(function (x) {
         return '<div class="form-row"><div class="form-top"><b>' + x.n + '</b><span>' + x.f + '</span></div>' +
@@ -4841,12 +4832,12 @@
       '</div></div>' +
       /* then: what it does → what it is for → where to get it → how to take it
          → what to check in the shop → and the deeper reading last */
-      '<details class="sheet-sec s-what" open><summary class="sec-head">' + svg('flask') + '<span>' + t().whatLabel + '</span></summary>' +
+      '<details class="sheet-sec" open><summary class="sec-head">' + t().whatLabel + '</summary>' +
         helpsRow(item, 'helps helps-lg') +
         whatList(item) + '</details>' +
-      '<details class="sheet-sec s-helps"><summary class="sec-head">' + svg('compass') + '<span>' + t().helpsWith + '</span></summary><div class="tag-row">' + tags + '</div></details>' +
+      '<details class="sheet-sec"><summary class="sec-head">' + t().helpsWith + '</summary><div class="tag-row">' + tags + '</div></details>' +
       foodBlock(item) + formsBlock(item) + buyBlock(item) +
-      '<details class="sheet-sec persp s-persp"><summary class="sec-head">' + svg('trend') + '<span>' + t().perspectives + '</span></summary>' +
+      '<details class="sheet-sec persp"><summary class="sec-head">' + t().perspectives + '</summary>' +
         '<div class="persp-tabs" role="tablist">' +
           PERSPECTIVES.map((p, i) => '<button type="button" class="persp-tab" role="tab" data-p="' + p.id +
             '" style="--pc:' + p.color + '" aria-selected="' + (i === 0) + '">' + svg(p.icon) +
