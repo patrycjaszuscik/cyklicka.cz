@@ -388,6 +388,7 @@
   .hero-search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent), var(--shadow-m); }
   .hero-search input::placeholder { color: var(--ink-dim); }
   body[data-view="home"] .topbar .search-shell { display: none; }
+  body[data-view="home"][data-searching="true"] .topbar .search-shell { display: block; }
   .hero-rule { height: 1px; background: var(--border); margin: 42px 0 0; }
   .section-label { display: flex; align-items: center; justify-content: center; gap: 18px;
     text-align: center; font-family: var(--font-display); font-style: normal; font-weight: 600;
@@ -786,31 +787,6 @@
     .world-name { font-size: 1.34rem; }
   }
 
-  /* once she has scrolled into the results, a way back to the box */
-  .to-search { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 180%); z-index: 55;
-    display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px 12px 18px; border-radius: 999px;
-    font-size: 0.86rem; font-weight: 700; color: #fff; background: var(--dark);
-    box-shadow: 0 10px 30px rgba(40,10,25,.32); transition: transform .35s var(--ease); }
-  .to-search[data-in="true"] { transform: translate(-50%, 0); }
-  .to-search::before { content: ''; width: 8px; height: 8px; border-left: 2px solid currentColor;
-    border-top: 2px solid currentColor; transform: rotate(45deg); margin-top: 2px; }
-
-  /* ── food sources ── */
-  .food-intro { margin: 0 0 14px; font-size: 0.82rem; line-height: 1.55; color: var(--ink-soft); text-align: center; }
-  .food-list { display: flex; flex-direction: column; gap: 10px; }
-  .food-row { display: grid; grid-template-columns: 1fr 1.1fr auto auto; align-items: center; gap: 10px; }
-  .food-name { font-size: 0.88rem; font-weight: 600; text-align: left; }
-  .food-bar { height: 9px; border-radius: 999px; background: color-mix(in srgb, var(--c) 12%, var(--surface-2)); overflow: hidden; }
-  .food-bar i { display: block; height: 100%; border-radius: 999px;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, var(--surface)), var(--c)); }
-  .food-val { font-size: 0.78rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .food-pct { font-size: 0.8rem; font-weight: 700; color: var(--c); font-variant-numeric: tabular-nums;
-    min-width: 4.5ch; text-align: right; }
-  @media (max-width: 520px) {
-    .food-row { grid-template-columns: 1fr auto auto; }
-    .food-bar { grid-column: 1 / -1; order: 3; }
-  }
-
   /* ── consent ── */
   .consent { position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 140%); z-index: 90;
     width: min(620px, calc(100% - 32px)); display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
@@ -1157,8 +1133,6 @@
     <p id="disclaimer-text"></p>
   </div>
 </section>
-
-<button type="button" class="to-search" id="to-search" hidden></button>
 
 <div class="scrim" id="scrim" data-open="false">
   <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div>
@@ -2669,7 +2643,7 @@
    'guide-cta','stats-band','feels-panel','feels-label','feels-sub','worlds-sub','concerns','worlds-label','worlds','view-home','view-quiz','view-plan','view-world',
    'view-cycle','view-results','quiz','plan-back','plan-title','plan-answers','plan-note','plan-results','plan-actions',
    'world-back','world-title','world-note','topics','showall','cycle-back','cycle-head','cycle-ring','cycle-len','cycle-phases','cycle-body',
-   'results-back','results-title','results-body','disclaimer-text','to-search','scrim','sheet','sources','sources-title','sources-body'].forEach(id => {
+   'results-back','results-title','results-body','disclaimer-text','scrim','sheet','sources','sources-title','sources-body'].forEach(id => {
     el[id.replace(/-(\w)/g, (m, c) => c.toUpperCase())] = document.getElementById(id);
   });
 
@@ -4119,8 +4093,6 @@
     el.savedBtn.setAttribute('aria-label', t().savedLabel);
     el.savedBtn.setAttribute('aria-pressed', String(state.savedOnly));
     el.disclaimerText.textContent = t().disclaimer;
-    el.toSearch.textContent = t().backToSearch;
-    if (typeof updateToSearch === 'function') updateToSearch();
     renderSources();
 
     el.viewHome.hidden = state.view !== 'home';
@@ -4906,18 +4878,6 @@
     sheetWipe = setTimeout(function () {
       if (!openItemId) el.sheet.innerHTML = '';
     }, 350);
-  }
-
-  /* a search that has scrolled off the top needs a way back to itself */
-  el.toSearch.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
-    setTimeout(function () { el.heroSearch.focus({ preventScroll: true }); }, reduceMotion ? 0 : 420);
-  });
-  /* while a search is open, the way back to the box is always on screen */
-  function updateToSearch() {
-    const show = state.view === 'home' && !!state.query;
-    el.toSearch.hidden = !show;
-    el.toSearch.dataset.in = show ? 'true' : 'false';
   }
 
   el.scrim.addEventListener('click', (e) => { if (e.target === el.scrim) closeSheet(); });
